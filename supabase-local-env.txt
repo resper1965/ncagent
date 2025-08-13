@@ -1,0 +1,115 @@
+# ========================================
+# Supabase Local - Environment Variables
+# ========================================
+# Variáveis para o Supabase local (Docker Compose)
+# Copie estas variáveis para o arquivo .env do Docker Compose
+
+############
+# SECRETS (OBRIGATÓRIAS)
+############
+
+POSTGRES_PASSWORD=nagent-supabase-pg-secure-2024-xyz789-abc123-def456
+JWT_SECRET=nagent-jwt-secret-2024-xyz789-abc123-def456-ghi789
+ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
+DASHBOARD_USERNAME=supabase
+DASHBOARD_PASSWORD=nagent-dashboard-secure-2024-xyz789
+SECRET_KEY_BASE=nagent-secret-key-base-2024-xyz789-abc123-def456-ghi789-jkl012-mno345-pqr678
+VAULT_ENC_KEY=nagent-vault-enc-key-32-chars
+
+############
+# DATABASE (OBRIGATÓRIAS)
+############
+
+POSTGRES_HOST=db
+POSTGRES_DB=postgres
+POSTGRES_PORT=5432
+
+############
+# SUPERVISOR (OBRIGATÓRIAS)
+############
+
+POOLER_PROXY_PORT_TRANSACTION=6543
+POOLER_DEFAULT_POOL_SIZE=20
+POOLER_MAX_CLIENT_CONN=100
+POOLER_TENANT_ID=nagent-tenant-2024
+
+############
+# API PROXY (OBRIGATÓRIAS)
+############
+
+KONG_HTTP_PORT=8000
+KONG_HTTPS_PORT=8443
+
+############
+# API (OBRIGATÓRIAS)
+############
+
+PGRST_DB_SCHEMAS=public,storage,graphql_public
+
+############
+# AUTH (OBRIGATÓRIAS)
+############
+
+SITE_URL=https://ncagent.ness.tec.br
+ADDITIONAL_REDIRECT_URLS=
+JWT_EXPIRY=3600
+DISABLE_SIGNUP=false
+API_EXTERNAL_URL=https://ncagent.ness.tec.br/api
+
+############
+# EMAIL AUTH (OBRIGATÓRIAS)
+############
+
+ENABLE_EMAIL_SIGNUP=true
+ENABLE_EMAIL_AUTOCONFIRM=true
+SMTP_ADMIN_EMAIL=resper@ness.com.br
+SMTP_HOST=localhost
+SMTP_PORT=587
+SMTP_USER=resper@ness.com.br
+SMTP_PASS=nagent-smtp-password-2024
+SMTP_SENDER_NAME=n.CISO Platform
+ENABLE_ANONYMOUS_USERS=false
+
+############
+# PHONE AUTH (OPCIONAIS)
+############
+
+ENABLE_PHONE_SIGNUP=true
+ENABLE_PHONE_AUTOCONFIRM=true
+
+############
+# STUDIO (OBRIGATÓRIAS)
+############
+
+STUDIO_DEFAULT_ORGANIZATION=Default Organization
+STUDIO_DEFAULT_PROJECT=Default Project
+STUDIO_PORT=3000
+SUPABASE_PUBLIC_URL=https://ncagent.ness.tec.br
+
+############
+# FUNCTIONS (OBRIGATÓRIAS)
+############
+
+FUNCTIONS_VERIFY_JWT=false
+
+############
+# LOGS (OBRIGATÓRIAS)
+############
+
+LOGFLARE_LOGGER_BACKEND_API_KEY=nagent-logflare-backend-2024-xyz789-abc123-def456
+LOGFLARE_API_KEY=nagent-logflare-api-2024-xyz789-abc123-def456
+DOCKER_SOCKET_LOCATION=/var/run/docker.sock
+GOOGLE_PROJECT_ID=GOOGLE_PROJECT_ID
+GOOGLE_PROJECT_NUMBER=GOOGLE_PROJECT_NUMBER
+
+# ========================================
+# INSTRUÇÕES DE USO
+# ========================================
+
+# 1. Copie todas as variáveis acima para o arquivo .env do Docker Compose
+# 2. Reinicie o Supabase local:
+#    docker-compose down
+#    docker-compose up -d
+# 3. Verifique os logs:
+#    docker-compose logs -f supabase

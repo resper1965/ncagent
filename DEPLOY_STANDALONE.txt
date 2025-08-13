@@ -1,0 +1,2 @@
+Build standalone funcionando - $(date)
+server.js gerado em: apps/web/.next/standalone/apps/web/server.js

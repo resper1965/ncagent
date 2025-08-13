@@ -1,0 +1,37 @@
+# ncagent Platform - Dockerfile
+FROM node:18-alpine
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Copiar arquivos de configuração
+COPY package*.json ./
+COPY turbo.json ./
+COPY tsconfig*.json ./
+
+# Instalar dependências do root
+RUN npm ci
+
+# Copiar todo o código
+COPY . .
+
+# Instalar dependências da aplicação web
+WORKDIR /app/apps/web
+RUN npm ci
+
+# Build da aplicação web
+RUN npm run build
+
+# Copiar script de inicialização
+COPY start.sh /app/apps/web/start.sh
+RUN chmod +x /app/apps/web/start.sh
+
+# Expor porta
+EXPOSE 3000
+
+# Variáveis de ambiente
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Comando de inicialização
+CMD ["/app/apps/web/start.sh"]

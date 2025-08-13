@@ -1,0 +1,154 @@
+# ========================================
+# n.Agent - Variáveis de Ambiente da Aplicação
+# ========================================
+# Aplicar no container da aplicação no Easypanel
+# Ambiente: PRODUÇÃO
+
+# ========================================
+# CONFIGURAÇÃO DO SUPABASE (OBRIGATÓRIO)
+# ========================================
+
+# URL do Supabase (usar a URL do Easypanel)
+NEXT_PUBLIC_SUPABASE_URL=https://nsecops-ness-supabase.pzgnh1.easypanel.host/
+
+# Chave anônima do Supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+
+# Chave de serviço do Supabase
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
+
+# ========================================
+# CONFIGURAÇÃO DO OPENAI (OBRIGATÓRIO)
+# ========================================
+
+# Chave da API do OpenAI
+OPENAI_API_KEY=sk-proj-REPLACE_WITH_YOUR_ACTUAL_OPENAI_API_KEY
+
+# ========================================
+# CONFIGURAÇÃO DA APLICAÇÃO (OBRIGATÓRIO)
+# ========================================
+
+# Ambiente de execução
+NODE_ENV=production
+
+# Porta da aplicação
+PORT=3000
+
+# URL da aplicação
+NEXT_PUBLIC_APP_URL=https://ncagent.ness.tec.br
+
+# Chave customizada
+CUSTOM_KEY=nagent-production-key-2024
+
+# ========================================
+# CONFIGURAÇÃO DO RAG (OBRIGATÓRIO)
+# ========================================
+
+# Modelo de embedding
+RAG_EMBEDDING_MODEL=text-embedding-3-small
+
+# Tamanho do chunk
+RAG_CHUNK_SIZE=1000
+
+# Sobreposição do chunk
+RAG_CHUNK_OVERLAP=200
+
+# Top K para busca
+RAG_TOPK=12
+
+# Modelo LLM
+RAG_LLM_MODEL=gpt-3.5-turbo
+
+# ========================================
+# CONFIGURAÇÃO DO REDIS (OPCIONAL)
+# ========================================
+
+# URL do Redis (se usar Redis externo)
+REDIS_URL=redis://localhost:6379
+
+# ========================================
+# CONFIGURAÇÃO DE SEGURANÇA (OPCIONAL)
+# ========================================
+
+# Habilitar auto-confirmação de email
+ENABLE_EMAIL_AUTOCONFIRM=true
+
+# Desabilitar usuários anônimos
+ENABLE_ANONYMOUS_USERS=false
+
+# Tempo de expiração do JWT
+JWT_EXPIRY=3600
+
+# Desabilitar cadastro
+DISABLE_SIGNUP=false
+
+# ========================================
+# CONFIGURAÇÃO DE EMAIL (OPCIONAL)
+# ========================================
+
+# Email do administrador
+SMTP_ADMIN_EMAIL=resper@ness.com.br
+
+# Host SMTP
+SMTP_HOST=localhost
+
+# Porta SMTP
+SMTP_PORT=587
+
+# Usuário SMTP
+SMTP_USER=resper@ness.com.br
+
+# Senha SMTP
+SMTP_PASS=nagent-smtp-password-2024
+
+# Nome do remetente
+SMTP_SENDER_NAME=n.Agent Platform
+
+# ========================================
+# CONFIGURAÇÃO DE MONITORAMENTO (OPCIONAL)
+# ========================================
+
+# Chave da API do Logflare (Backend)
+LOGFLARE_LOGGER_BACKEND_API_KEY=nagent-logflare-backend-2024-xyz789-abc123-def456
+
+# Chave da API do Logflare
+LOGFLARE_API_KEY=nagent-logflare-api-2024-xyz789-abc123-def456
+
+# ========================================
+# CONFIGURAÇÃO DE PERFORMANCE (OPCIONAL)
+# ========================================
+
+# Tamanho padrão do pool
+POOLER_DEFAULT_POOL_SIZE=20
+
+# Máximo de conexões por cliente
+POOLER_MAX_CLIENT_CONN=100
+
+# ========================================
+# INSTRUÇÕES DE APLICAÇÃO
+# ========================================
+
+# 1. Copie todas essas variáveis para o container da aplicação no Easypanel
+# 2. Certifique-se de que não há espaços extras ou caracteres especiais
+# 3. Reinicie o container após aplicar as variáveis
+# 4. Verifique se a aplicação está funcionando corretamente
+
+# ========================================
+# VERIFICAÇÃO PÓS-APLICAÇÃO
+# ========================================
+
+# Após aplicar, verifique se:
+# 1. A aplicação está acessível em https://ncagent.ness.tec.br
+# 2. Não há erros de conexão com o Supabase
+# 3. O chat está funcionando corretamente
+# 4. O upload de documentos está funcionando
+
+# ========================================
+# TROUBLESHOOTING
+# ========================================
+
+# Se houver problemas:
+# 1. Verifique se todas as variáveis foram aplicadas
+# 2. Confirme se o Supabase está funcionando
+# 3. Verifique os logs da aplicação
+# 4. Teste a conexão com o Supabase manualmente

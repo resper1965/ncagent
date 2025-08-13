@@ -1,0 +1,30 @@
+{
+  "name": "ncagent-platform",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "type-check": "turbo run type-check",
+    "start": "cd apps/web && npm start"
+  },
+  "devDependencies": {
+    "turbo": "^1.11.0"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=10.0.0"
+  }
+}
