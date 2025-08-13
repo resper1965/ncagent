@@ -1,0 +1,29 @@
+{
+  "name": "worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@langchain/community": "^0.3.50",
+    "@langchain/openai": "^0.0.14",
+    "@supabase/supabase-js": "^2.38.0",
+    "bullmq": "^5.0.0",
+    "ioredis": "^5.3.2",
+    "langchain": "^0.3.30",
+    "mammoth": "^1.6.0",
+    "pdf-parse": "^1.1.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "eslint": "^8.55.0",
+    "tsx": "^4.6.0",
+    "typescript": "^5.3.0"
+  }
+}
