@@ -453,9 +453,10 @@ Respond in JSON:
         .from('conversation_sessions')
         .delete()
         .lt('last_activity', cutoffDate.toISOString())
+        .select()
 
       if (error) throw error
-      return data ? data.length : 0
+      return Array.isArray(data) ? data.length : 0
     } catch (error) {
       console.error('Error cleaning old sessions:', error)
       return 0
