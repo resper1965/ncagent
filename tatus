@@ -1,5 +1,0 @@
-[33m859ae2c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m fix: resolve TypeScript build errors and ESLint configuration
-[33mb711c82[m[33m ([m[1;31morigin/main[m[33m)[m feat: add PostgreSQL password resolution and environment configuration files
-[33m96d7bec[m fix: corrige URLs do Supabase para usar o endereço correto do Easypanel
-[33m6fa51ac[m fix: corrige imports faltantes e remove APIs problemáticas temporariamente
-[33m4242980[m fix: adiciona configuração webpack para resolver path mapping

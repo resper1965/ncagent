@@ -31,7 +31,20 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 config.env
-config.env
+
+# Secrets and credentials
+.secrets/
+*.env
+*-env*.txt
+secrets-*.txt
+supabase-*-env*.txt
+nagent-app-env*.txt
+VALIDACAO-VARIAVEIS.md
+VARIABLES-MASTER-REFERENCE.md
+RESOLUCAO-ERROS-POSTGRESQL.md
+easypanel-*.txt
+criar-tabelas-manualmente.sql
+setup-db*.js
 
 # Vercel
 .vercel
