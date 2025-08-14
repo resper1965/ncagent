@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nsecops-ness-supabase.pzgnh1.easypanel.host';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+// Função para criar cliente Supabase com validação
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase configuration is missing. Please check environment variables.');
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 // Schema para criar versão
 const createVersionSchema = z.object({
@@ -21,6 +28,8 @@ const updateVersionSchema = z.object({
 // GET - Listar versões
 export async function GET() {
   try {
+    const supabase = createSupabaseClient();
+    
     const { data: versions, error } = await supabase
       .from('ncmd.product_versions')
       .select('*')
@@ -57,6 +66,8 @@ export async function POST(request: NextRequest) {
     const validatedData = createVersionSchema.parse(body);
     
     console.log(`🏷️  Criando versão: ${validatedData.versionTag}`);
+    
+    const supabase = createSupabaseClient();
     
     // Verificar se versão já existe
     const { data: existingVersion } = await supabase
@@ -135,6 +146,8 @@ export async function PUT(request: NextRequest) {
     
     console.log(`🔄 Atualizando versão: ${versionId}`);
     
+    const supabase = createSupabaseClient();
+    
     const { data: version, error } = await supabase
       .from('ncmd.product_versions')
       .update({
@@ -199,6 +212,8 @@ export async function DELETE(request: NextRequest) {
     }
     
     console.log(`🗑️  Deletando versão: ${versionId}`);
+    
+    const supabase = createSupabaseClient();
     
     // Verificar se há documentos associados
     const { data: documents, error: docsError } = await supabase

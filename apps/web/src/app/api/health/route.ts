@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nsecops-ness-supabase.pzgnh1.easypanel.host';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q';
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+// Função para criar cliente Supabase com validação
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase configuration is missing. Please check environment variables.');
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 export async function GET() {
   const startTime = Date.now();
@@ -27,6 +34,8 @@ export async function GET() {
   };
 
   try {
+    const supabase = createSupabaseClient();
+    
     // Teste 1: Conexão com banco de dados
     const dbStart = Date.now();
     const { data: dbTest, error: dbError } = await supabase
