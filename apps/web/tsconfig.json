@@ -17,7 +17,7 @@
         "../../packages/ui/src/*"
       ]
     },
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   },
   "include": [
     "next-env.d.ts",
