@@ -1,20 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 import { createHash } from 'crypto';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nsecops-ness-supabase.pzgnh1.easypanel.host';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Função para criar cliente Supabase com validação
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase configuration is missing. Please check environment variables.');
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-// Schema de validação para upload
 const uploadSchema = z.object({
-  title: z.string().min(1, 'Título é obrigatório').max(200, 'Título muito longo'),
-  versionTag: z.string().min(1, 'Versão é obrigatória'),
-  scope: z.enum(['GENERAL', 'SECURITY', 'DEV', 'INFRA']).default('GENERAL'),
-  classification: z.enum(['PUBLIC', 'INTERNAL', 'CONFIDENTIAL', 'PII']).default('INTERNAL'),
-  source: z.enum(['upload', 'sharepoint']).default('upload'),
+  title: z.string().min(1).max(200),
+  source: z.string().min(1).max(100),
+  versionTag: z.string().min(1).max(50),
+  scope: z.enum(['GENERAL', 'SECURITY', 'DEV', 'INFRA']),
+  classification: z.enum(['PUBLIC', 'INTERNAL', 'CONFIDENTIAL', 'PII']),
   fileContent: z.string().optional(), // Base64 do arquivo
   fileUrl: z.string().url().optional(), // URL do arquivo (para SharePoint)
   mimeType: z.string().optional()
@@ -22,6 +28,8 @@ const uploadSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = createSupabaseClient();
+    
     // Rate limiting
     const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
     // TODO: Implementar rate limiting com Redis
@@ -134,6 +142,8 @@ export async function POST(request: NextRequest) {
 // Método GET para listar documentos
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createSupabaseClient();
+    
     const { searchParams } = new URL(request.url);
     const versionTag = searchParams.get('version');
     const scope = searchParams.get('scope');

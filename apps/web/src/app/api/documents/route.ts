@@ -2,10 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://nsecops-ness-supabase.pzgnh1.easypanel.host';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey);
+// Função para criar cliente Supabase com validação
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase configuration is missing. Please check environment variables.');
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 // Schema para atualizar documento
 const updateDocumentSchema = z.object({
@@ -17,6 +24,8 @@ const updateDocumentSchema = z.object({
 // GET - Listar documentos com filtros
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createSupabaseClient();
+    
     const { searchParams } = new URL(request.url);
     const versionTag = searchParams.get('version');
     const scope = searchParams.get('scope');
@@ -83,6 +92,8 @@ export async function GET(request: NextRequest) {
 // PUT - Atualizar documento
 export async function PUT(request: NextRequest) {
   try {
+    const supabase = createSupabaseClient();
+    
     // TODO: Verificar permissões
     
     const { searchParams } = new URL(request.url);
@@ -149,6 +160,8 @@ export async function PUT(request: NextRequest) {
 // DELETE - Deletar documento
 export async function DELETE(request: NextRequest) {
   try {
+    const supabase = createSupabaseClient();
+    
     // TODO: Verificar permissões de admin
     
     const { searchParams } = new URL(request.url);

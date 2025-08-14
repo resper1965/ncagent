@@ -1,12 +1,21 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+// Função para criar cliente Supabase com validação
+function createSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase configuration is missing. Please check environment variables.');
+  }
+  
+  return createClient(supabaseUrl, supabaseServiceKey);
+}
 
 export async function setupRAGSchema() {
   try {
+    const supabase = createSupabaseClient();
+    
     console.log('🔧 Configurando schema RAG no Supabase...')
 
     // 1. Criar tabela documents
@@ -129,6 +138,8 @@ export async function setupRAGSchema() {
 
 export async function setupRLSPolicies() {
   try {
+    const supabase = createSupabaseClient();
+    
     console.log('🔒 Configurando políticas RLS...')
 
     // Habilitar RLS nas tabelas
