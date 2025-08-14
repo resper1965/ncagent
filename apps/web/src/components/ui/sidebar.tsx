@@ -14,7 +14,8 @@ import {
   Layers,
   Zap,
   Shield,
-  Home
+  Home,
+  Database
 } from 'lucide-react'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -39,6 +40,12 @@ export function Sidebar({ className }: SidebarProps) {
       title: "Documents",
       href: "/documents",
       icon: FileText,
+      variant: "default" as const,
+    },
+    {
+      title: "Knowledge Bases",
+      href: "/knowledge-bases",
+      icon: Database,
       variant: "default" as const,
     },
     {
@@ -121,6 +128,10 @@ export function Sidebar({ className }: SidebarProps) {
             <div className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm text-muted-foreground">
               <Layers className="h-4 w-4" />
               <span>Multi-Agent System</span>
+            </div>
+            <div className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm text-muted-foreground">
+              <Database className="h-4 w-4" />
+              <span>Versioned Knowledge Bases</span>
             </div>
           </div>
         </div>
