@@ -1,271 +1,142 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { 
-  MessageSquare, 
-  FileText, 
-  Upload, 
-  Brain, 
-  Shield, 
-  Zap,
-  ArrowRight,
-  CheckCircle,
-  Users,
-  Globe,
-  BarChart3,
-  TrendingUp,
-  Activity,
-  Clock
-} from 'lucide-react'
 
 export default function DashboardPage() {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-white">Dashboard</h2>
         <div className="flex items-center space-x-2">
-          <Button asChild>
-            <Link href="/ask">
-              Start Chat
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
+          <Link 
+            href="/ask"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all bg-blue-600 text-white px-4 py-2 hover:bg-blue-700"
+          >
+            Start Chat
+            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
         </div>
       </div>
       
       {/* Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Documents</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">1,234</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Agents</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">
-              +2 new this week
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Chat Sessions</CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Uptime</CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">99.9%</div>
-            <p className="text-xs text-muted-foreground">
-              +0.1% from last week
-            </p>
-          </CardContent>
-        </Card>
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-300">Total Documents</h3>
+            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-white">1,234</div>
+          <p className="text-xs text-gray-400">+20.1% from last month</p>
+        </div>
+        
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-300">Active Agents</h3>
+            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-white">12</div>
+          <p className="text-xs text-gray-400">+2 new this week</p>
+        </div>
+        
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-300">Chat Sessions</h3>
+            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-white">573</div>
+          <p className="text-xs text-gray-400">+201 since last hour</p>
+        </div>
+        
+        <div className="bg-gray-800 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-300">System Uptime</h3>
+            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-white">99.9%</div>
+          <p className="text-xs text-gray-400">+0.1% from last week</p>
+        </div>
       </div>
 
-      {/* Recent Activity & Quick Actions */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Latest document uploads and chat sessions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                  <Upload className="h-4 w-4 text-primary" />
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    New document uploaded
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Security Policy v2.1.pdf
-                  </p>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  2 minutes ago
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/10">
-                  <MessageSquare className="h-4 w-4 text-green-500" />
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    Chat session completed
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Security compliance questions
-                  </p>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  15 minutes ago
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500/10">
-                  <Brain className="h-4 w-4 text-blue-500" />
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    Agent training completed
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Security Specialist Agent
-                  </p>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  1 hour ago
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>
-              Common tasks and shortcuts
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button asChild className="w-full justify-start">
-              <Link href="/ask">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Start New Chat
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full justify-start">
-              <Link href="/upload">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload Documents
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full justify-start">
-              <Link href="/agents">
-                <Users className="mr-2 h-4 w-4" />
-                Manage Agents
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full justify-start">
-              <Link href="/documents">
-                <FileText className="mr-2 h-4 w-4" />
-                Browse Documents
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Quick Actions */}
+      <div className="bg-gray-800 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-white mb-4">Quick Actions</h3>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <Link 
+            href="/ask"
+            className="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            <svg className="mr-3 h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span className="text-white">Start New Chat</span>
+          </Link>
+          
+          <Link 
+            href="/upload"
+            className="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            <svg className="mr-3 h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <span className="text-white">Upload Documents</span>
+          </Link>
+          
+          <Link 
+            href="/documents"
+            className="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            <svg className="mr-3 h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="text-white">Browse Documents</span>
+          </Link>
+          
+          <Link 
+            href="/knowledge-bases"
+            className="flex items-center p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            <svg className="mr-3 h-5 w-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+            </svg>
+            <span className="text-white">Knowledge Bases</span>
+          </Link>
+        </div>
       </div>
 
       {/* System Status */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">System Status</CardTitle>
-            <Badge variant="secondary" className="bg-green-500/10 text-green-500">
-              Operational
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">API Health</span>
-                <div className="flex items-center space-x-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm">Healthy</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Database</span>
-                <div className="flex items-center space-x-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm">Connected</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">AI Models</span>
-                <div className="flex items-center space-x-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm">Available</span>
-                </div>
-              </div>
+      <div className="bg-gray-800 rounded-lg p-6">
+        <h3 className="text-lg font-medium text-white mb-4">System Status</h3>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300">API Health</span>
+            <div className="flex items-center space-x-1">
+              <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-white">Healthy</span>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Performance</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Response Time</span>
-                <span className="text-sm font-medium">245ms</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Throughput</span>
-                <span className="text-sm font-medium">1.2k req/s</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Error Rate</span>
-                <span className="text-sm font-medium">0.01%</span>
-              </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300">Database</span>
+            <div className="flex items-center space-x-1">
+              <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-white">Connected</span>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Security</CardTitle>
-            <Shield className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Last Scan</span>
-                <span className="text-sm font-medium">2 hours ago</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Threats</span>
-                <span className="text-sm font-medium text-green-500">0 detected</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Compliance</span>
-                <span className="text-sm font-medium text-green-500">100%</span>
-              </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-300">AI Models</span>
+            <div className="flex items-center space-x-1">
+              <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-white">Available</span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )
