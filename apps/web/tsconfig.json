@@ -7,10 +7,17 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/rag/*": ["../../packages/rag/src/*"],
-      "@/ui/*": ["../../packages/ui/src/*"]
-    }
+      "@/*": [
+        "./src/*"
+      ],
+      "@/rag/*": [
+        "../../packages/rag/src/*"
+      ],
+      "@/ui/*": [
+        "../../packages/ui/src/*"
+      ]
+    },
+    "jsx": "preserve"
   },
   "include": [
     "next-env.d.ts",
@@ -18,5 +25,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
