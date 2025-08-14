@@ -18,25 +18,23 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="flex min-h-screen bg-gray-950">
+        <div className="flex min-h-screen bg-[#121212]">
           {/* Sidebar */}
           <SidebarCollapsible />
           
           {/* Main content */}
           <div className="flex flex-1 flex-col">
-            <header className="bg-gray-900 border-b border-gray-800">
-              <div className="flex h-16 items-center gap-x-4 border-b border-gray-800 bg-gray-900 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <header className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border-b border-white/10">
+              <div className="flex h-16 items-center gap-x-4 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
                 <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-                  {/* Logo da Empresa */}
+                  {/* Company Logo - Always in same place */}
                   <div className="flex items-center">
                     <div className="flex items-center space-x-3">
-                      {/* Logo Icon */}
                       <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                       </div>
-                      {/* Logo Text */}
                       <span className="text-lg font-semibold text-white">ionichealth</span>
                       <span className="text-xs text-gray-400">TM</span>
                     </div>
@@ -54,12 +52,12 @@ export default function RootLayout({
                       <input
                         type="text"
                         placeholder="Search..."
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-md leading-5 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-500 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="block w-full pl-10 pr-3 py-2 border border-white/10 rounded-lg leading-5 bg-white/5 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                       />
                     </div>
                     
                     {/* Notifications */}
-                    <button className="p-2 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors">
+                    <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4.19 4H20a2 2 0 012 2v10a2 2 0 01-2 2H4.19A2 2 0 012 16V6a2 2 0 012-2z" />
                       </svg>
@@ -81,7 +79,7 @@ export default function RootLayout({
                 </div>
               </div>
             </header>
-            <main className="flex-1 bg-gray-950">
+            <main className="flex-1 bg-[#121212]">
               {children}
             </main>
           </div>
