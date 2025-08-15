@@ -25,12 +25,7 @@ export default function RootLayout({
           {/* Main content */}
           <div className="flex flex-1 flex-col">
             <header className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border-b border-white/10">
-              <div className="flex h-16 items-center justify-center px-4 shadow-sm sm:px-6 lg:px-8">
-                <img
-                  src="/ionic-health-logo.svg"
-                  alt="Ionic Health Logo"
-                  className="h-8 w-auto"
-                />
+              <div className="flex h-16 items-center px-4 shadow-sm sm:px-6 lg:px-8">
               </div>
             </header>
             <main className="flex-1 bg-[#121212]">
