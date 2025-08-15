@@ -225,9 +225,9 @@ export default function AskPage() {
           >
             <div className="flex items-center space-x-3">
               {selectedAgents.length > 1 ? (
-                <Users className="h-5 w-5 text-purple-400" />
+                <Users className="h-5 w-5 text-[#00ade8]" />
               ) : (
-                <Brain className="h-5 w-5 text-purple-400" />
+                <Brain className="h-5 w-5 text-[#00ade8]" />
               )}
               <div className="text-left">
                 <p className="text-sm text-gray-300">Selected Agent(s)</p>
@@ -249,7 +249,7 @@ export default function AskPage() {
                       type="checkbox"
                       checked={enableMemory}
                       onChange={(e) => setEnableMemory(e.target.checked)}
-                      className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500"
+                      className="rounded border-white/20 bg-white/5 text-[#00ade8] focus:ring-[#00ade8]"
                     />
                     <span className="text-sm text-gray-300">Enable conversational memory</span>
                   </label>
@@ -263,7 +263,7 @@ export default function AskPage() {
                         type="checkbox"
                         checked={enableDebate}
                         onChange={(e) => setEnableDebate(e.target.checked)}
-                        className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500"
+                        className="rounded border-white/20 bg-white/5 text-[#00ade8] focus:ring-[#00ade8]"
                       />
                       <span className="text-sm text-gray-300">Enable debate between agents</span>
                     </label>
@@ -278,12 +278,12 @@ export default function AskPage() {
                   }}
                   className={`w-full p-3 rounded-lg text-left transition-colors ${
                     !selectedAgent && selectedAgents.length === 0
-                      ? 'bg-purple-500/20 border border-purple-500'
+                      ? 'bg-[#00ade8]/20 border border-[#00ade8]'
                       : 'hover:bg-white/10'
                   }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Bot className="h-5 w-5 text-purple-400" />
+                    <Bot className="h-5 w-5 text-[#00ade8]" />
                     <div>
                       <p className="font-medium text-white">Gabi Default</p>
                       <p className="text-sm text-gray-300">General assistant for documents</p>
@@ -303,7 +303,7 @@ export default function AskPage() {
                       }}
                       className={`w-full p-3 rounded-lg text-left transition-colors ${
                         selectedAgent?.id === agent.id
-                          ? 'bg-purple-500/20 border border-purple-500'
+                          ? 'bg-[#00ade8]/20 border border-[#00ade8]'
                           : 'hover:bg-white/10'
                       }`}
                     >
@@ -327,7 +327,7 @@ export default function AskPage() {
                       onClick={() => handleAgentSelect(agent)}
                       className={`w-full p-3 rounded-lg text-left transition-colors ${
                         selectedAgents.find(a => a.id === agent.id)
-                          ? 'bg-purple-500/20 border border-purple-500'
+                          ? 'bg-[#00ade8]/20 border border-[#00ade8]'
                           : 'hover:bg-white/10'
                       }`}
                     >
@@ -336,7 +336,7 @@ export default function AskPage() {
                           type="checkbox"
                           checked={selectedAgents.find(a => a.id === agent.id) !== undefined}
                           readOnly
-                          className="rounded border-white/20 bg-white/5 text-purple-500 focus:ring-purple-500"
+                          className="rounded border-white/20 bg-white/5 text-[#00ade8] focus:ring-[#00ade8]"
                         />
                         <div className="text-xl">{agent.icon}</div>
                         <div>
@@ -406,7 +406,7 @@ export default function AskPage() {
                   </p>
                 )}
                 {enableMemory && (
-                  <p className="text-sm text-purple-400 mt-2">
+                  <p className="text-sm text-[#00ade8] mt-2">
                     💾 Conversational memory enabled - your conversations will be remembered
                   </p>
                 )}
@@ -428,9 +428,9 @@ export default function AskPage() {
                       {message.role === 'assistant' && (
                         <div className="flex items-center space-x-2">
                           {message.type === 'multi_agent' ? (
-                            <Users className="h-5 w-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                            <Users className="h-5 w-5 text-[#00ade8] mt-0.5 flex-shrink-0" />
                           ) : message.agent_used && message.agent_used !== 'Gabi Default' ? (
-                            <Brain className="h-5 w-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                            <Brain className="h-5 w-5 text-[#00ade8] mt-0.5 flex-shrink-0" />
                           ) : (
                             <Bot className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
                           )}
@@ -452,7 +452,7 @@ export default function AskPage() {
                               {message.multi_agent_responses.map((response, index) => (
                                 <div key={index} className="mb-3 p-3 bg-white/5 rounded-lg border border-white/10">
                                   <div className="flex items-center space-x-2 mb-2">
-                                    <Brain className="h-4 w-4 text-purple-400" />
+                                    <Brain className="h-4 w-4 text-[#00ade8]" />
                                     <span className="text-sm font-medium text-white">{response.agent_used}</span>
                                   </div>
                                   <p className="text-sm text-gray-200">{response.content}</p>
@@ -546,7 +546,7 @@ export default function AskPage() {
                         ? `Ask something to ${selectedAgent.name}...`
                         : "Type your question..."
                   }
-                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400"
+                  className="w-full p-3 bg-white/5 border border-white/10 rounded-lg resize-none focus:ring-2 focus:ring-[#00ade8] focus:border-transparent text-white placeholder-gray-400"
                   rows={2}
                   disabled={loading}
                 />
