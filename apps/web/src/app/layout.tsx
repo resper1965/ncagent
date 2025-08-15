@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { SidebarCollapsible } from '../components/ui/sidebar-collapsible'
+import { SidebarCollapsible } from '@/components/ui/sidebar-collapsible'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Gabi - AI-Powered Document Intelligence',
-  description: 'Transform your documents into accessible knowledge with advanced AI',
+  title: 'Gabi - AI Document Management',
+  description: 'Intelligent document management and AI chat system',
 }
 
 export default function RootLayout({
@@ -16,23 +17,24 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <div className="flex min-h-screen bg-slate-900">
-          {/* Sidebar */}
-          <SidebarCollapsible />
-          
-          {/* Main content */}
-          <div className="flex flex-1 flex-col">
-            <header className="bg-slate-800 border-b border-slate-700">
-              <div className="flex h-16 items-center px-4 shadow-sm sm:px-6 lg:px-8">
+        <AuthProvider>
+          <div className="flex h-screen bg-slate-900">
+            <SidebarCollapsible />
+            <main className="flex-1 flex flex-col">
+              {/* Header */}
+              <header className="h-16 bg-slate-800 border-b border-slate-700 flex items-center justify-center">
+                {/* Header content removed as per user request */}
+              </header>
+              
+              {/* Main Content */}
+              <div className="flex-1 overflow-hidden">
+                {children}
               </div>
-            </header>
-            <main className="flex-1 bg-slate-900">
-              {children}
             </main>
           </div>
-        </div>
+        </AuthProvider>
       </body>
     </html>
   )

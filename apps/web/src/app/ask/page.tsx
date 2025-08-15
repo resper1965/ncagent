@@ -2,6 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User, Loader2, ChevronDown, Brain, Users, MessageSquare, History, RefreshCw, Database } from 'lucide-react'
+import { useChat } from '@/hooks/useApi'
+import { useAgents } from '@/hooks/useApi'
+import { useKnowledgeBases } from '@/hooks/useApi'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface Message {
   id: string
@@ -27,9 +31,13 @@ interface ConversationSession {
 }
 
 export default function AskPage() {
+  const { user } = useAuth()
+  const { sendMessage, sending } = useChat()
+  const { fetchAgents, loading: agentsLoading } = useAgents()
+  const { fetchKnowledgeBases, loading: kbLoading } = useKnowledgeBases()
+  
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
   const [agents, setAgents] = useState<any[]>([])
   const [knowledgeBases, setKnowledgeBases] = useState<any[]>([])
   const [selectedAgent, setSelectedAgent] = useState<any | null>(null)
@@ -52,31 +60,21 @@ export default function AskPage() {
   }, [messages])
 
   useEffect(() => {
-    fetchAgents()
-    fetchKnowledgeBases()
-  }, [])
-
-  const fetchAgents = async () => {
-    try {
-      const response = await fetch('/api/agents')
-      const data = await response.json()
-      if (data.success) {
-        setAgents(data.data.agents || [])
-      }
-    } catch (error) {
-      console.error('Error fetching agents:', error)
+    if (user) {
+      loadData()
     }
-  }
+  }, [user])
 
-  const fetchKnowledgeBases = async () => {
+  const loadData = async () => {
     try {
-      const response = await fetch('/api/knowledge-bases')
-      const data = await response.json()
-      if (data.success) {
-        setKnowledgeBases(data.data.knowledge_bases || [])
-      }
+      const [agentsData, kbData] = await Promise.all([
+        fetchAgents(),
+        fetchKnowledgeBases()
+      ])
+      setAgents(agentsData || [])
+      setKnowledgeBases(kbData || [])
     } catch (error) {
-      console.error('Error fetching knowledge bases:', error)
+      console.error('Failed to load data:', error)
     }
   }
 
@@ -86,8 +84,8 @@ export default function AskPage() {
     setShowSessionInfo(false)
   }
 
-  const sendMessage = async () => {
-    if (!input.trim() || loading) return
+  const handleSendMessage = async () => {
+    if (!input.trim() || sending) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -98,65 +96,51 @@ export default function AskPage() {
 
     setMessages(prev => [...prev, userMessage])
     setInput('')
-    setLoading(true)
 
     try {
-      const requestBody: any = {
-        question: input,
+      const options: any = {
         sessionId: currentSessionId,
-        enable_memory: enableMemory,
-        knowledge_base_ids: selectedKnowledgeBases.map(kb => kb.id)
+        enableMemory,
+        knowledgeBaseIds: selectedKnowledgeBases.map(kb => kb.id)
       }
 
       if (selectedAgents.length > 1) {
-        requestBody.agentIds = selectedAgents.map(agent => agent.id)
-        requestBody.enable_debate = enableDebate
+        options.agentIds = selectedAgents.map(agent => agent.id)
+        options.enableDebate = enableDebate
       } else if (selectedAgent) {
-        requestBody.agentId = selectedAgent.id
+        options.agentId = selectedAgent.id
       }
 
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
-      })
+      const response = await sendMessage(input, options)
 
-      const data = await response.json()
-
-      if (data.error) {
-        throw new Error(data.error)
-      }
-
-      if (data.data.session_id && !currentSessionId) {
-        setCurrentSessionId(data.data.session_id)
+      if (response.session_id && !currentSessionId) {
+        setCurrentSessionId(response.session_id)
       }
 
       let assistantMessage: Message
 
-      if (data.data.type === 'multi_agent') {
+      if (response.type === 'multi_agent') {
         assistantMessage = {
           id: (Date.now() + 1).toString(),
-          content: data.data.debate_summary || 'Debate between agents completed.',
+          content: response.debate_summary || 'Debate between agents completed.',
           role: 'assistant',
           timestamp: new Date(),
           type: 'multi_agent',
-          multi_agent_responses: data.data.responses,
-          debate_summary: data.data.debate_summary,
-          consensus: data.data.consensus,
-          disagreements: data.data.disagreements
+          multi_agent_responses: response.responses,
+          debate_summary: response.debate_summary,
+          consensus: response.consensus,
+          disagreements: response.disagreements
         }
       } else {
         assistantMessage = {
           id: (Date.now() + 1).toString(),
-          content: data.data.answer || data.data.content,
+          content: response.answer || response.content,
           role: 'assistant',
           timestamp: new Date(),
-          sources: data.data.sources,
-          confidence: data.data.confidence,
-          agent_used: data.data.agent_used,
-          type: data.data.type
+          sources: response.sources,
+          confidence: response.confidence,
+          agent_used: response.agent_used,
+          type: response.type
         }
       }
 
@@ -171,15 +155,13 @@ export default function AskPage() {
         timestamp: new Date()
       }
       setMessages(prev => [...prev, errorMessage])
-    } finally {
-      setLoading(false)
     }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      sendMessage()
+      handleSendMessage()
     }
   }
 
@@ -224,6 +206,24 @@ export default function AskPage() {
       return selectedKnowledgeBases[0].name
     }
     return `${selectedKnowledgeBases.length} Knowledge Bases Selected`
+  }
+
+  if (!user) {
+    return (
+      <div className="dashboard-container">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <MessageSquare className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
+              Authentication Required
+            </h3>
+            <p className="text-slate-400">
+              Please sign in to start chatting
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -603,7 +603,7 @@ export default function AskPage() {
                 </div>
               ))
             )}
-            {loading && (
+            {sending && (
               <div className="flex justify-start">
                 <div className="bg-slate-700/50 rounded-xl p-4 border border-slate-700">
                   <div className="flex items-center space-x-2">
@@ -640,12 +640,12 @@ export default function AskPage() {
                   }
                   className="w-full p-3 bg-slate-700/50 border border-slate-700 rounded-lg resize-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-gray-400"
                   rows={2}
-                  disabled={loading}
+                  disabled={sending}
                 />
               </div>
               <button
-                onClick={sendMessage}
-                disabled={!input.trim() || loading}
+                onClick={handleSendMessage}
+                disabled={!input.trim() || sending}
                 className="px-6 py-3 bg-gradient-to-r bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 <Send className="h-5 w-5" />

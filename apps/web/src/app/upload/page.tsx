@@ -1,7 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2, X } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2, X, Database } from 'lucide-react'
+import { useUpload } from '@/hooks/useApi'
+import { useKnowledgeBases } from '@/hooks/useApi'
+import { useAuth } from '@/contexts/AuthContext'
 
 interface UploadedFile {
   id: string
@@ -14,12 +17,32 @@ interface UploadedFile {
 }
 
 export default function UploadPage() {
+  const { user } = useAuth()
+  const { uploadDocument, uploading, progress } = useUpload()
+  const { fetchKnowledgeBases, loading: kbLoading } = useKnowledgeBases()
+  
   const [files, setFiles] = useState<UploadedFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
-  const [uploading, setUploading] = useState(false)
+  const [knowledgeBases, setKnowledgeBases] = useState<any[]>([])
+  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState<string>('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFileSelect = (selectedFiles: FileList | null) => {
+  useEffect(() => {
+    if (user) {
+      loadKnowledgeBases()
+    }
+  }, [user])
+
+  const loadKnowledgeBases = async () => {
+    try {
+      const kbs = await fetchKnowledgeBases()
+      setKnowledgeBases(kbs || [])
+    } catch (error) {
+      console.error('Failed to load knowledge bases:', error)
+    }
+  }
+
+  const handleFileSelect = async (selectedFiles: FileList | null) => {
     if (!selectedFiles) return
 
     const newFiles: UploadedFile[] = Array.from(selectedFiles).map(file => ({
@@ -32,52 +55,46 @@ export default function UploadPage() {
     }))
 
     setFiles(prev => [...prev, ...newFiles])
-    uploadFiles(newFiles)
-  }
 
-  const uploadFiles = async (filesToUpload: UploadedFile[]) => {
-    setUploading(true)
-
-    for (const file of filesToUpload) {
-      try {
-        // Simulate file upload
-        await simulateUpload(file)
-        
-        setFiles(prev => prev.map(f => 
-          f.id === file.id 
-            ? { ...f, status: 'success', progress: 100 }
-            : f
-        ))
-      } catch (error) {
-        setFiles(prev => prev.map(f => 
-          f.id === file.id 
-            ? { ...f, status: 'error', error: 'Upload failed' }
-            : f
-        ))
-      }
+    // Upload each file
+    for (const file of selectedFiles) {
+      await uploadFile(file)
     }
-
-    setUploading(false)
   }
 
-  const simulateUpload = async (file: UploadedFile): Promise<void> => {
-    return new Promise((resolve, reject) => {
-      let progress = 0
-      const interval = setInterval(() => {
-        progress += Math.random() * 30
-        if (progress >= 100) {
-          progress = 100
-          clearInterval(interval)
-          resolve()
-        }
-        
-        setFiles(prev => prev.map(f => 
-          f.id === file.id 
-            ? { ...f, progress }
-            : f
-        ))
-      }, 200)
-    })
+  const uploadFile = async (file: File) => {
+    try {
+      const fileId = Math.random().toString(36).substr(2, 9)
+      
+      // Update file status to uploading
+      setFiles(prev => prev.map(f => 
+        f.name === file.name 
+          ? { ...f, status: 'uploading', progress: 0 }
+          : f
+      ))
+
+      // Upload document
+      const result = await uploadDocument(file, selectedKnowledgeBase || undefined)
+      
+      // Update file status to success
+      setFiles(prev => prev.map(f => 
+        f.name === file.name 
+          ? { ...f, status: 'success', progress: 100 }
+          : f
+      ))
+
+      console.log('Upload successful:', result)
+      
+    } catch (error) {
+      console.error('Upload failed:', error)
+      
+      // Update file status to error
+      setFiles(prev => prev.map(f => 
+        f.name === file.name 
+          ? { ...f, status: 'error', error: error instanceof Error ? error.message : 'Upload failed' }
+          : f
+      ))
+    }
   }
 
   const removeFile = (fileId: string) => {
@@ -117,8 +134,51 @@ export default function UploadPage() {
     return '📁'
   }
 
+  if (!user) {
+    return (
+      <div className="dashboard-container">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <Database className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">
+              Authentication Required
+            </h3>
+            <p className="text-slate-400">
+              Please sign in to upload documents
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="dashboard-container">
+      {/* Knowledge Base Selection */}
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4 mb-6">
+        <div className="flex items-center space-x-3">
+          <Database className="h-5 w-5 text-[#00ade8]" />
+          <div className="flex-1">
+            <label className="text-sm font-medium text-slate-200 mb-1 block">
+              Knowledge Base (Optional)
+            </label>
+            <select
+              value={selectedKnowledgeBase}
+              onChange={(e) => setSelectedKnowledgeBase(e.target.value)}
+              className="w-full p-2 bg-slate-700/50 border border-slate-700 rounded-lg text-white focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+              disabled={kbLoading}
+            >
+              <option value="">No Knowledge Base</option>
+              {knowledgeBases.map((kb) => (
+                <option key={kb.id} value={kb.id}>
+                  {kb.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
       {/* Upload Area */}
       <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-8 mb-6">
         <div
@@ -144,9 +204,10 @@ export default function UploadPage() {
               </p>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-6 py-3 bg-gradient-to-r bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+                disabled={uploading}
+                className="px-6 py-3 bg-gradient-to-r bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Choose Files
+                {uploading ? 'Uploading...' : 'Choose Files'}
               </button>
             </div>
           </div>
