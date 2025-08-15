@@ -10,7 +10,7 @@
     --card-foreground: 0 0% 100%; /* White */
     --popover: 240deg 5% 9%; /* Zinc-950 */
     --popover-foreground: 0 0% 100%; /* White */
-    --primary: 185deg 53% 58%; /* Cyan #53c4cd */
+    --primary: 199deg 100% 45%; /* Cyan #53c4cd */
     --primary-foreground: 0 0% 100%; /* White */
     --secondary: 240deg 5% 9%; /* Zinc-950 */
     --secondary-foreground: 0 0% 100%; /* White */
@@ -22,7 +22,7 @@
     --destructive-foreground: 0 0% 100%; /* White */
     --border: 240deg 4% 16%; /* Zinc-800 */
     --input: 240deg 4% 16%; /* Zinc-800 */
-    --ring: 185deg 53% 58%; /* Cyan */
+    --ring: 199deg 100% 45%; /* Cyan */
     --radius: 0.5rem;
   }
 
@@ -33,7 +33,7 @@
     --card-foreground: 0 0% 100%; /* White */
     --popover: 240deg 5% 9%; /* Zinc-950 */
     --popover-foreground: 0 0% 100%; /* White */
-    --primary: 185deg 53% 58%; /* Cyan #53c4cd */
+    --primary: 199deg 100% 45%; /* Cyan #53c4cd */
     --primary-foreground: 0 0% 100%; /* White */
     --secondary: 240deg 5% 9%; /* Zinc-950 */
     --secondary-foreground: 0 0% 100%; /* White */
@@ -45,7 +45,7 @@
     --destructive-foreground: 0 0% 100%; /* White */
     --border: 240deg 4% 16%; /* Zinc-800 */
     --input: 240deg 4% 16%; /* Zinc-800 */
-    --ring: 185deg 53% 58%; /* Cyan */
+    --ring: 199deg 100% 45%; /* Cyan */
   }
 }
 
