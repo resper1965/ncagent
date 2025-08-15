@@ -207,7 +207,7 @@ export default function KnowledgeBasesPage() {
           <h2 className="text-3xl font-bold tracking-tight text-white">Knowledge Bases</h2>
           <p className="text-gray-400 mt-1">Manage segmented knowledge repositories with version control</p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+                    <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
           <Plus className="h-4 w-4" />
           <span>Create Knowledge Base</span>
         </button>
@@ -324,7 +324,7 @@ export default function KnowledgeBasesPage() {
               <div key={kb.id} className="p-6 hover:bg-white/5 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 flex-1">
-                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                    <div className="p-3 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl">
                       <Brain className="h-6 w-6 text-white" />
                     </div>
                     

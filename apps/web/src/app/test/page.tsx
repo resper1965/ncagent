@@ -67,7 +67,7 @@ export default function TestPage() {
       {/* Test Results */}
       <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+                      <div className="p-2 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg">
             <CheckCircle className="h-6 w-6 text-white" />
           </div>
           <div>

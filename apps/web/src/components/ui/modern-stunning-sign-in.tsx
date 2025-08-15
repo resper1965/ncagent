@@ -43,7 +43,7 @@ const SignIn1 = () => {
       {/* Centered glass card */}
       <div className="relative z-10 w-full max-w-sm rounded-3xl bg-gradient-to-r from-[#ffffff10] to-[#121212] backdrop-blur-sm  shadow-2xl p-8 flex flex-col items-center">
         {/* Gabi Logo */}
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 mb-6 shadow-lg">
+        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600 mb-6 shadow-lg">
           <span className="text-white font-bold text-lg">G</span>
         </div>
         {/* Title */}
@@ -78,7 +78,7 @@ const SignIn1 = () => {
           <div>
             <button
               onClick={handleSignIn}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium px-5 py-3 rounded-full shadow hover:from-purple-600 hover:to-pink-600 transition mb-3  text-sm"
+              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium px-5 py-3 rounded-full shadow hover:from-cyan-600 hover:to-cyan-700 transition mb-3  text-sm"
             >
               Sign in
             </button>

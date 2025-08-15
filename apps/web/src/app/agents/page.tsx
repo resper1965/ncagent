@@ -203,7 +203,7 @@ export default function AgentsPage() {
         </div>
         <button 
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+          className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <Plus className="h-4 w-4" />
           <span>Create Agent</span>
@@ -288,7 +288,7 @@ export default function AgentsPage() {
                       key={agent.id}
                       className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
                         selectedAgent?.id === agent.id
-                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30'
+                          ? 'bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border border-cyan-500/30'
                           : 'bg-white/5 hover:bg-white/10 border border-white/10'
                       }`}
                       onClick={() => handleAgentSelect(agent)}
@@ -355,7 +355,7 @@ export default function AgentsPage() {
                   </div>
                   <button
                     onClick={() => setShowDatasetModal(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                    className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
                   >
                     <Database className="h-4 w-4" />
                     <span>Add Dataset</span>
@@ -378,7 +378,7 @@ export default function AgentsPage() {
                   <ul className="space-y-2">
                     {selectedAgent.core_principles.map((principle, index) => (
                       <li key={index} className="flex items-start space-x-2">
-                        <span className="text-purple-400 mt-1">•</span>
+                        <span className="text-cyan-400 mt-1">•</span>
                         <span className="text-gray-300">{principle}</span>
                       </li>
                     ))}
@@ -391,7 +391,7 @@ export default function AgentsPage() {
                     {selectedAgent.expertise_areas.map((area, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full text-sm"
+                        className="px-3 py-1 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-full text-sm"
                       >
                         {area}
                       </span>

@@ -203,7 +203,7 @@ export default function UploadPage() {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-6">
+                      <div className="mx-auto w-16 h-16 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mb-6">
             <Upload className="h-8 w-8 text-white" />
           </div>
           
@@ -219,7 +219,7 @@ export default function UploadPage() {
           <div className="flex items-center justify-center space-x-4">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Choose Files
             </button>
@@ -267,7 +267,7 @@ export default function UploadPage() {
                   {file.status === 'uploading' && (
                     <div className="w-24 bg-white/10 rounded-full h-2">
                       <div
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-cyan-500 to-cyan-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${file.progress}%` }}
                       />
                     </div>

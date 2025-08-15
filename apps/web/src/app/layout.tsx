@@ -35,8 +35,7 @@ export default function RootLayout({
                         alt="Ionic Health Logo" 
                         className="h-8 w-auto"
                       />
-                      <span className="text-lg font-semibold text-white">ionichealth</span>
-                      <span className="text-xs text-gray-400">TM</span>
+                      <span className="text-lg font-semibold text-white">Gabi</span>
                     </div>
                   </div>
                   
@@ -65,7 +64,7 @@ export default function RootLayout({
                     
                     {/* Avatar da Gabi */}
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full flex items-center justify-center">
                         <span className="text-white font-semibold text-sm">G</span>
                       </div>
                       <div className="hidden md:block">

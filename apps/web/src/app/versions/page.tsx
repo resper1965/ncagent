@@ -141,7 +141,7 @@ export default function VersionsPage() {
           <h2 className="text-3xl font-bold tracking-tight text-white">Version Control</h2>
           <p className="text-gray-400 mt-1">Manage and track application versions and releases</p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+                    <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
           <GitBranch className="h-4 w-4" />
           <span>Create Release</span>
         </button>
@@ -208,7 +208,7 @@ export default function VersionsPage() {
       <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg">
               <Tag className="h-6 w-6 text-white" />
             </div>
             <div>

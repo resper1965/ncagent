@@ -196,7 +196,7 @@ export default function DocumentsPage() {
           <h2 className="text-3xl font-bold tracking-tight text-white">Documents</h2>
           <p className="text-gray-400 mt-1">Manage and search your uploaded documents</p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+                    <button className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
           <Plus className="h-4 w-4" />
           <span>Upload New</span>
         </button>
