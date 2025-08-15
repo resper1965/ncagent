@@ -13,6 +13,15 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
+# Configurar ambiente de produção
+echo "🔧 Configurando ambiente de produção..."
+if [ -f "production.env" ]; then
+    echo "📋 Usando configurações de produção..."
+    export $(cat production.env | grep -v '^#' | xargs)
+else
+    echo "⚠️  Arquivo production.env não encontrado, usando configurações padrão"
+fi
+
 # Instalar dependências
 echo "📦 Instalando dependências..."
 npm ci
@@ -32,15 +41,15 @@ echo "✅ Deploy preparado com sucesso!"
 echo ""
 echo "📋 Próximos passos no EasyPanel:"
 echo "1. Fazer upload do código"
-echo "2. Configurar variáveis de ambiente"
+echo "2. Configurar variáveis de ambiente (ver production.env)"
 echo "3. Definir porta: 3000"
-echo "4. Configurar domínio"
+echo "4. Configurar domínio: https://ncagent.ness.tec.br"
 echo "5. Deploy!"
 echo ""
 echo "🔧 Variáveis de ambiente necessárias:"
-echo "SUPABASE_URL=https://seu-projeto.supabase.co"
-echo "SUPABASE_ANON_KEY=sua_chave_anon"
-echo "SUPABASE_SERVICE_ROLE_KEY=sua_chave_service"
-echo "OPENAI_API_KEY=sk-..."
-echo "REDIS_URL=redis://localhost:6379"
+echo "NEXT_PUBLIC_SUPABASE_URL=https://nsecops-ness-supabase.pzgnh1.easypanel.host/"
+echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+echo "SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+echo "OPENAI_API_KEY=sk-proj-..."
 echo "NODE_ENV=production"
+echo "NEXT_PUBLIC_APP_URL=https://ncagent.ness.tec.br"

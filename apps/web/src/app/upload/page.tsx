@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Upload, FileText, CheckCircle, AlertCircle, Loader2, X, Database } from 'lucide-react'
-import { useUpload } from '@/hooks/useApi'
-import { useKnowledgeBases } from '@/hooks/useApi'
-import { useAuth } from '@/contexts/AuthContext'
+import { useUpload, useKnowledgeBases } from '../../hooks/useApi'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface UploadedFile {
   id: string

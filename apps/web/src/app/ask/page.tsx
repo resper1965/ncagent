@@ -2,10 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User, Loader2, ChevronDown, Brain, Users, MessageSquare, History, RefreshCw, Database } from 'lucide-react'
-import { useChat } from '@/hooks/useApi'
-import { useAgents } from '@/hooks/useApi'
-import { useKnowledgeBases } from '@/hooks/useApi'
-import { useAuth } from '@/contexts/AuthContext'
+import { useChat, useAgents, useKnowledgeBases } from '../../hooks/useApi'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface Message {
   id: string
