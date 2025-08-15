@@ -177,7 +177,7 @@ export default function DocumentsPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+      <div className="dashboard-container">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-2">
             <Clock className="h-6 w-6 text-purple-400 animate-spin" />
@@ -189,11 +189,10 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+    <div className="dashboard-container">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">Documents</h2>
           <p className="text-slate-400 mt-1">Manage and search your uploaded documents</p>
         </div>
                     <button className="px-4 py-2 bg-gradient-to-r bg-blue-400 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">

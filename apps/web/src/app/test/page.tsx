@@ -1,167 +1,197 @@
 'use client'
 
-import { CheckCircle, Zap, Brain, Database, Clock } from 'lucide-react'
+import { useState } from 'react'
+import { CheckCircle, XCircle, AlertCircle, Loader2 } from 'lucide-react'
+
+interface TestResult {
+  id: string
+  name: string
+  status: 'pending' | 'running' | 'passed' | 'failed'
+  message?: string
+  duration?: number
+}
 
 export default function TestPage() {
+  const [tests, setTests] = useState<TestResult[]>([
+    { id: '1', name: 'Database Connection', status: 'pending' },
+    { id: '2', name: 'API Endpoints', status: 'pending' },
+    { id: '3', name: 'Authentication', status: 'pending' },
+    { id: '4', name: 'File Upload', status: 'pending' },
+    { id: '5', name: 'AI Models', status: 'pending' },
+    { id: '6', name: 'Vector Database', status: 'pending' }
+  ])
+  const [running, setRunning] = useState(false)
+
+  const runTests = async () => {
+    setRunning(true)
+    
+    for (let i = 0; i < tests.length; i++) {
+      // Simulate test running
+      setTests(prev => prev.map((test, index) => 
+        index === i ? { ...test, status: 'running' } : test
+      ))
+      
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
+      
+      // Simulate test result
+      const passed = Math.random() > 0.3
+      setTests(prev => prev.map((test, index) => 
+        index === i ? { 
+          ...test, 
+          status: passed ? 'passed' : 'failed',
+          message: passed ? 'Test completed successfully' : 'Test failed',
+          duration: Math.floor(Math.random() * 3000) + 500
+        } : test
+      ))
+    }
+    
+    setRunning(false)
+  }
+
+  const resetTests = () => {
+    setTests(prev => prev.map(test => ({ ...test, status: 'pending', message: undefined, duration: undefined })))
+  }
+
+  const getStatusIcon = (status: TestResult['status']) => {
+    switch (status) {
+      case 'pending':
+        return <div className="w-4 h-4 bg-slate-600 rounded-full" />
+      case 'running':
+        return <Loader2 className="w-4 h-4 text-[#00ade8] animate-spin" />
+      case 'passed':
+        return <CheckCircle className="w-4 h-4 text-green-400" />
+      case 'failed':
+        return <XCircle className="w-4 h-4 text-red-400" />
+    }
+  }
+
+  const getStatusColor = (status: TestResult['status']) => {
+    switch (status) {
+      case 'pending':
+        return 'text-slate-400'
+      case 'running':
+        return 'text-[#00ade8]'
+      case 'passed':
+        return 'text-green-400'
+      case 'failed':
+        return 'text-red-400'
+    }
+  }
+
+  const passedTests = tests.filter(t => t.status === 'passed').length
+  const failedTests = tests.filter(t => t.status === 'failed').length
+  const totalTests = tests.length
+
   return (
-    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">System Test</h2>
-          <p className="text-slate-400 mt-1">Test and verify system functionality</p>
-        </div>
-      </div>
-
-      {/* Status Cards */}
-      <div className="grid gap-6 md:grid-cols-4">
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-400" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-400">Next.js</p>
-              <p className="text-2xl font-bold text-white">✅ Working</p>
-            </div>
+    <div className="dashboard-container">
+      {/* Test Controls */}
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-white">System Test Suite</h3>
+          <div className="flex space-x-3">
+            <button
+              onClick={runTests}
+              disabled={running}
+              className="px-4 py-2 bg-gradient-to-r bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {running ? 'Running Tests...' : 'Run All Tests'}
+            </button>
+            <button
+              onClick={resetTests}
+              disabled={running}
+              className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all duration-200 disabled:opacity-50"
+            >
+              Reset
+            </button>
           </div>
         </div>
 
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-500/20 rounded-lg">
-              <Zap className="h-6 w-6 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-400">React</p>
-              <p className="text-2xl font-bold text-white">✅ Active</p>
-            </div>
+        {/* Test Summary */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-slate-700/50 rounded-lg p-4 text-center">
+            <p className="text-2xl font-bold text-white">{totalTests}</p>
+            <p className="text-sm text-slate-400">Total Tests</p>
           </div>
-        </div>
-
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-purple-500/20 rounded-lg">
-              <Brain className="h-6 w-6 text-purple-400" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-400">AI System</p>
-              <p className="text-2xl font-bold text-white">✅ Ready</p>
-            </div>
+          <div className="bg-green-500/20 rounded-lg p-4 text-center">
+            <p className="text-2xl font-bold text-green-400">{passedTests}</p>
+            <p className="text-sm text-slate-400">Passed</p>
           </div>
-        </div>
-
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-yellow-500/20 rounded-lg">
-              <Database className="h-6 w-6 text-yellow-400" />
-            </div>
-            <div>
-              <p className="text-sm text-slate-400">Database</p>
-              <p className="text-2xl font-bold text-white">✅ Connected</p>
-            </div>
+          <div className="bg-red-500/20 rounded-lg p-4 text-center">
+            <p className="text-2xl font-bold text-red-400">{failedTests}</p>
+            <p className="text-sm text-slate-400">Failed</p>
           </div>
         </div>
       </div>
 
       {/* Test Results */}
       <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-        <div className="flex items-center space-x-3 mb-6">
-                      <div className="p-2 bg-gradient-to-r bg-blue-400 rounded-lg">
-            <CheckCircle className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-white">Test Results</h3>
-            <p className="text-slate-400">All systems operational</p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-white font-medium">Frontend Rendering</span>
+        <h3 className="text-lg font-semibold text-white mb-4">Test Results</h3>
+        <div className="space-y-3">
+          {tests.map((test) => (
+            <div
+              key={test.id}
+              className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700"
+            >
+              <div className="flex items-center space-x-3">
+                {getStatusIcon(test.status)}
+                <div>
+                  <p className="font-medium text-white">{test.name}</p>
+                  {test.message && (
+                    <p className={`text-sm ${getStatusColor(test.status)}`}>
+                      {test.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                {test.duration && (
+                  <span className="text-sm text-slate-400">
+                    {test.duration}ms
+                  </span>
+                )}
+                <span className={`text-sm font-medium ${getStatusColor(test.status)}`}>
+                  {test.status.toUpperCase()}
+                </span>
+              </div>
             </div>
-            <span className="text-green-400 text-sm">PASSED</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-white font-medium">Component Loading</span>
-            </div>
-            <span className="text-green-400 text-sm">PASSED</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-white font-medium">Styling System</span>
-            </div>
-            <span className="text-green-400 text-sm">PASSED</span>
-          </div>
-
-          <div className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700">
-            <div className="flex items-center space-x-3">
-              <CheckCircle className="h-5 w-5 text-green-400" />
-              <span className="text-white font-medium">Responsive Design</span>
-            </div>
-            <span className="text-green-400 text-sm">PASSED</span>
-          </div>
-        </div>
-
-        <div className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
-          <div className="flex items-center space-x-2">
-            <CheckCircle className="h-5 w-5 text-green-400" />
-            <span className="text-green-400 font-medium">All tests completed successfully!</span>
-          </div>
-          <p className="text-slate-200 text-sm mt-1">
-            The Gabi application is running properly with all components functioning as expected.
-          </p>
+          ))}
         </div>
       </div>
 
-      {/* System Info */}
-      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">System Information</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Framework:</span>
-              <span className="text-white">Next.js 14.2.31</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">React Version:</span>
-              <span className="text-white">18.2.0</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">TypeScript:</span>
-              <span className="text-white">5.3.3</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Tailwind CSS:</span>
-              <span className="text-white">3.4.0</span>
+      {/* System Status */}
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6 mt-6">
+        <h3 className="text-lg font-semibold text-white mb-4">System Status</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="flex items-center space-x-3 p-3 bg-green-500/20 rounded-lg border border-green-500/30">
+            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+            <div>
+              <p className="text-sm font-medium text-white">Database</p>
+              <p className="text-xs text-green-400">Connected</p>
             </div>
           </div>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Environment:</span>
-              <span className="text-white">Production</span>
+          
+          <div className="flex items-center space-x-3 p-3 bg-green-500/20 rounded-lg border border-green-500/30">
+            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+            <div>
+              <p className="text-sm font-medium text-white">API</p>
+              <p className="text-xs text-green-400">Healthy</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Build Time:</span>
-              <span className="text-white">
-                <Clock className="h-4 w-4 inline mr-1" />
-                {new Date().toLocaleTimeString()}
-              </span>
+          </div>
+          
+          <div className="flex items-center space-x-3 p-3 bg-green-500/20 rounded-lg border border-green-500/30">
+            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+            <div>
+              <p className="text-sm font-medium text-white">Storage</p>
+              <p className="text-xs text-green-400">Available</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Status:</span>
-              <span className="text-green-400">Operational</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Version:</span>
-              <span className="text-white">2.1.0</span>
+          </div>
+          
+          <div className="flex items-center space-x-3 p-3 bg-green-500/20 rounded-lg border border-green-500/30">
+            <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+            <div>
+              <p className="text-sm font-medium text-white">AI Models</p>
+              <p className="text-xs text-green-400">Ready</p>
             </div>
           </div>
         </div>

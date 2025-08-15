@@ -183,7 +183,7 @@ export default function AgentsPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+      <div className="dashboard-container">
         <div className="flex items-center justify-center h-64">
           <div className="flex items-center space-x-2">
             <Clock className="h-6 w-6 text-purple-400 animate-spin" />
@@ -195,11 +195,10 @@ export default function AgentsPage() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+    <div className="dashboard-container">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">AI Agents</h2>
           <p className="text-slate-400 mt-1">Manage and configure your specialized AI agents</p>
         </div>
         <button 

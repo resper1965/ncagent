@@ -21,7 +21,6 @@ export default function SettingsPage() {
     <div className="flex-1 space-y-8 p-8 bg-slate-900">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight text-white">Settings</h2>
       </div>
 
       {/* Settings Layout */}

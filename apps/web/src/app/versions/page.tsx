@@ -134,11 +134,10 @@ export default function VersionsPage() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+    <div className="dashboard-container">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">Version Control</h2>
           <p className="text-slate-400 mt-1">Manage and track application versions and releases</p>
         </div>
                     <button className="px-4 py-2 bg-gradient-to-r bg-blue-400 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
