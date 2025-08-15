@@ -18,17 +18,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="flex min-h-screen bg-[#121212]">
+        <div className="flex min-h-screen bg-slate-900">
           {/* Sidebar */}
           <SidebarCollapsible />
           
           {/* Main content */}
           <div className="flex flex-1 flex-col">
-            <header className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border-b border-white/10">
+            <header className="bg-slate-800 border-b border-slate-700">
               <div className="flex h-16 items-center px-4 shadow-sm sm:px-6 lg:px-8">
               </div>
             </header>
-            <main className="flex-1 bg-[#121212]">
+            <main className="flex-1 bg-slate-900">
               {children}
             </main>
           </div>

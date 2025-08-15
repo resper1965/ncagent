@@ -182,7 +182,7 @@ export default function KnowledgeBasesPage() {
       case 'inactive':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-slate-400'
     }
   }
 
@@ -205,9 +205,9 @@ export default function KnowledgeBasesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white">Knowledge Bases</h2>
-          <p className="text-gray-400 mt-1">Manage segmented knowledge repositories with version control</p>
+          <p className="text-slate-400 mt-1">Manage segmented knowledge repositories with version control</p>
         </div>
-                    <button className="px-4 py-2 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white font-medium rounded-xl hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+                    <button className="px-4 py-2 bg-gradient-to-r bg-blue-400 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
           <Plus className="h-4 w-4" />
           <span>Create Knowledge Base</span>
         </button>
@@ -215,25 +215,25 @@ export default function KnowledgeBasesPage() {
 
       {/* Stats */}
       <div className="grid gap-6 md:grid-cols-4">
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
               <Database className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Knowledge Bases</p>
+              <p className="text-sm text-slate-400">Total Knowledge Bases</p>
               <p className="text-2xl font-bold text-white">{knowledgeBases.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
               <CheckCircle className="h-6 w-6 text-green-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Active</p>
+              <p className="text-sm text-slate-400">Active</p>
               <p className="text-2xl font-bold text-white">
                 {knowledgeBases.filter(kb => kb.status === 'active').length}
               </p>
@@ -241,13 +241,13 @@ export default function KnowledgeBasesPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
               <Zap className="h-6 w-6 text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Chat Enabled</p>
+              <p className="text-sm text-slate-400">Chat Enabled</p>
               <p className="text-2xl font-bold text-white">
                 {knowledgeBases.filter(kb => kb.chatEnabled).length}
               </p>
@@ -255,13 +255,13 @@ export default function KnowledgeBasesPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-500/20 rounded-lg">
               <Clock className="h-6 w-6 text-yellow-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Processing</p>
+              <p className="text-sm text-slate-400">Processing</p>
               <p className="text-2xl font-bold text-white">
                 {knowledgeBases.filter(kb => kb.status === 'processing').length}
               </p>
@@ -271,17 +271,17 @@ export default function KnowledgeBasesPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
               placeholder="Search knowledge bases..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
@@ -289,7 +289,7 @@ export default function KnowledgeBasesPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            className="px-4 py-2 bg-slate-700/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -300,8 +300,8 @@ export default function KnowledgeBasesPage() {
       </div>
 
       {/* Knowledge Bases List */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-white/10">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700">
           <h3 className="text-lg font-semibold text-white">
             Knowledge Bases ({filteredKnowledgeBases.length})
           </h3>
@@ -309,9 +309,9 @@ export default function KnowledgeBasesPage() {
 
         {filteredKnowledgeBases.length === 0 ? (
           <div className="p-12 text-center">
-            <FolderOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <FolderOpen className="mx-auto h-12 w-12 text-slate-400 mb-4" />
             <h3 className="text-lg font-medium text-white mb-2">No knowledge bases found</h3>
-            <p className="text-gray-400">
+            <p className="text-slate-400">
               {searchTerm || selectedStatus !== 'all'
                 ? 'Try adjusting your search or filters'
                 : 'Create your first knowledge base to get started'
@@ -321,10 +321,10 @@ export default function KnowledgeBasesPage() {
         ) : (
           <div className="divide-y divide-white/10">
             {filteredKnowledgeBases.map((kb) => (
-              <div key={kb.id} className="p-6 hover:bg-white/5 transition-colors">
+              <div key={kb.id} className="p-6 hover:bg-slate-700/50 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4 flex-1">
-                    <div className="p-3 bg-gradient-to-r from-[#00ade8] to-[#0099cc] rounded-xl">
+                    <div className="p-3 bg-gradient-to-r bg-blue-400 rounded-xl">
                       <Brain className="h-6 w-6 text-white" />
                     </div>
                     
@@ -340,7 +340,7 @@ export default function KnowledgeBasesPage() {
                         </div>
                       </div>
                       
-                      <p className="text-sm text-gray-400 mb-2">{kb.description}</p>
+                      <p className="text-sm text-slate-400 mb-2">{kb.description}</p>
                       
                       <div className="flex items-center space-x-4 text-xs text-gray-500 mb-2">
                         <div className="flex items-center space-x-1">
@@ -366,7 +366,7 @@ export default function KnowledgeBasesPage() {
                           {kb.tags.slice(0, 3).map((tag, index) => (
                             <span
                               key={index}
-                              className="text-xs px-2 py-1 bg-white/10 rounded-full text-gray-300"
+                              className="text-xs px-2 py-1 bg-slate-700/50 rounded-full text-slate-200"
                             >
                               {tag}
                             </span>
@@ -388,7 +388,7 @@ export default function KnowledgeBasesPage() {
                       className={`p-2 rounded-lg transition-colors ${
                         kb.chatEnabled
                           ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                          : 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30'
+                          : 'bg-gray-500/20 text-slate-400 hover:bg-gray-500/30'
                       }`}
                       title={kb.chatEnabled ? 'Disable chat' : 'Enable chat'}
                     >
@@ -401,31 +401,31 @@ export default function KnowledgeBasesPage() {
                     
                     {/* Action Buttons */}
                     <button
-                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                       title="View"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
                     <button
-                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                       title="Edit"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
                     <button
-                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                       title="Settings"
                     >
                       <Settings className="h-4 w-4" />
                     </button>
                     <button
-                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                       title="Delete"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                     <button
-                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                       title="More options"
                     >
                       <MoreVertical className="h-4 w-4" />

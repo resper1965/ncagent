@@ -177,43 +177,43 @@ export default function UploadPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white">Upload Documents</h2>
-          <p className="text-gray-400 mt-1">Upload your documents to make them searchable and queryable</p>
+          <p className="text-slate-400 mt-1">Upload your documents to make them searchable and queryable</p>
         </div>
       </div>
 
       {/* Upload Stats */}
       <div className="grid gap-6 md:grid-cols-3">
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
               <Cloud className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Uploaded</p>
+              <p className="text-sm text-slate-400">Total Uploaded</p>
               <p className="text-2xl font-bold text-white">1,234</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
               <Database className="h-6 w-6 text-green-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Processed</p>
+              <p className="text-sm text-slate-400">Processed</p>
               <p className="text-2xl font-bold text-white">1,189</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
               <Brain className="h-6 w-6 text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Vectorized</p>
+              <p className="text-sm text-slate-400">Vectorized</p>
               <p className="text-2xl font-bold text-white">1,156</p>
             </div>
           </div>
@@ -221,18 +221,18 @@ export default function UploadPage() {
       </div>
 
       {/* Upload Area */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-8">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-8">
         <div
           className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
             isDragging
               ? 'border-purple-400 bg-purple-500/10'
-              : 'border-white/20 hover:border-white/40 hover:bg-white/5'
+              : 'border-slate-600 hover:border-white/40 hover:bg-slate-700/50'
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-                      <div className="mx-auto w-16 h-16 bg-gradient-to-r from-[#00ade8] to-[#0099cc] rounded-full flex items-center justify-center mb-6">
+                      <div className="mx-auto w-16 h-16 bg-gradient-to-r bg-blue-400 rounded-full flex items-center justify-center mb-6">
             <Upload className="h-8 w-8 text-white" />
           </div>
           
@@ -240,7 +240,7 @@ export default function UploadPage() {
             Drop your files here
           </h3>
           
-          <p className="text-gray-400 mb-6 max-w-md mx-auto">
+          <p className="text-slate-400 mb-6 max-w-md mx-auto">
             Upload PDFs, Word documents, Excel files, images, and text files. 
             We'll process and make them searchable.
           </p>
@@ -248,11 +248,11 @@ export default function UploadPage() {
           <div className="flex items-center justify-center space-x-4">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-6 py-3 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white font-medium rounded-xl hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="px-6 py-3 bg-gradient-to-r bg-blue-400 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               Choose Files
             </button>
-            <span className="text-gray-400">or drag and drop</span>
+            <span className="text-slate-400">or drag and drop</span>
           </div>
           
           <div className="mt-6 text-xs text-gray-500">
@@ -273,30 +273,30 @@ export default function UploadPage() {
 
       {/* File List */}
       {files.length > 0 && (
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <h3 className="text-lg font-semibold text-white mb-4">Upload Queue</h3>
           
           <div className="space-y-3">
             {files.map((file) => (
               <div
                 key={file.id}
-                className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10"
+                className="flex items-center justify-between p-4 bg-slate-700/50 rounded-lg border border-slate-700"
               >
                 <div className="flex items-center space-x-3 flex-1">
                   <div className="text-2xl">{getFileIcon(file.type)}</div>
                   
                   <div className="flex-1 min-w-0">
                     <p className="text-white font-medium truncate">{file.name}</p>
-                    <p className="text-sm text-gray-400">{formatFileSize(file.size)}</p>
+                    <p className="text-sm text-slate-400">{formatFileSize(file.size)}</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3">
                   {/* Progress Bar */}
                   {file.status === 'uploading' && (
-                    <div className="w-24 bg-white/10 rounded-full h-2">
+                    <div className="w-24 bg-slate-700/50 rounded-full h-2">
                       <div
-                        className="bg-gradient-to-r from-[#00ade8] to-[#0099cc] h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r bg-blue-400 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${file.progress}%` }}
                       />
                     </div>
@@ -323,7 +323,7 @@ export default function UploadPage() {
                   {/* Remove Button */}
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                    className="p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -344,7 +344,7 @@ export default function UploadPage() {
       )}
 
       {/* Upload Tips */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Upload Tips</h3>
         
         <div className="grid gap-4 md:grid-cols-2">
@@ -354,7 +354,7 @@ export default function UploadPage() {
             </div>
             <div>
               <p className="text-white font-medium">High Quality Results</p>
-              <p className="text-sm text-gray-400">Use clear, well-formatted documents for better AI understanding</p>
+              <p className="text-sm text-slate-400">Use clear, well-formatted documents for better AI understanding</p>
             </div>
           </div>
           
@@ -364,7 +364,7 @@ export default function UploadPage() {
             </div>
             <div>
               <p className="text-white font-medium">Multiple Formats</p>
-              <p className="text-sm text-gray-400">Upload various file types to build a comprehensive knowledge base</p>
+              <p className="text-sm text-slate-400">Upload various file types to build a comprehensive knowledge base</p>
             </div>
           </div>
           
@@ -374,7 +374,7 @@ export default function UploadPage() {
             </div>
             <div>
               <p className="text-white font-medium">AI Processing</p>
-              <p className="text-sm text-gray-400">Documents are automatically processed and made searchable</p>
+              <p className="text-sm text-slate-400">Documents are automatically processed and made searchable</p>
             </div>
           </div>
           
@@ -384,7 +384,7 @@ export default function UploadPage() {
             </div>
             <div>
               <p className="text-white font-medium">File Size Limits</p>
-              <p className="text-sm text-gray-400">Keep files under 50MB for optimal processing speed</p>
+              <p className="text-sm text-slate-400">Keep files under 50MB for optimal processing speed</p>
             </div>
           </div>
         </div>

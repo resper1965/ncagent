@@ -129,7 +129,7 @@ export default function VersionsPage() {
       case 'deprecated':
         return 'bg-red-500/20 text-red-400'
       default:
-        return 'bg-gray-500/20 text-gray-400'
+        return 'bg-gray-500/20 text-slate-400'
     }
   }
 
@@ -139,9 +139,9 @@ export default function VersionsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight text-white">Version Control</h2>
-          <p className="text-gray-400 mt-1">Manage and track application versions and releases</p>
+          <p className="text-slate-400 mt-1">Manage and track application versions and releases</p>
         </div>
-                    <button className="px-4 py-2 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white font-medium rounded-xl hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+                    <button className="px-4 py-2 bg-gradient-to-r bg-blue-400 text-white font-medium rounded-xl hover:bg-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
           <GitBranch className="h-4 w-4" />
           <span>Create Release</span>
         </button>
@@ -149,25 +149,25 @@ export default function VersionsPage() {
 
       {/* Stats */}
       <div className="grid gap-6 md:grid-cols-4">
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
               <GitBranch className="h-6 w-6 text-blue-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Versions</p>
+              <p className="text-sm text-slate-400">Total Versions</p>
               <p className="text-2xl font-bold text-white">{versions.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
               <CheckCircle className="h-6 w-6 text-green-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Stable</p>
+              <p className="text-sm text-slate-400">Stable</p>
               <p className="text-2xl font-bold text-white">
                 {versions.filter(v => v.status === 'stable').length}
               </p>
@@ -175,13 +175,13 @@ export default function VersionsPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-500/20 rounded-lg">
               <Clock className="h-6 w-6 text-yellow-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Beta/Alpha</p>
+              <p className="text-sm text-slate-400">Beta/Alpha</p>
               <p className="text-2xl font-bold text-white">
                 {versions.filter(v => v.status === 'beta' || v.status === 'alpha').length}
               </p>
@@ -189,13 +189,13 @@ export default function VersionsPage() {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
               <Download className="h-6 w-6 text-purple-400" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Downloads</p>
+              <p className="text-sm text-slate-400">Total Downloads</p>
               <p className="text-2xl font-bold text-white">
                 {versions.reduce((sum, v) => sum + v.downloadCount, 0)}
               </p>
@@ -205,15 +205,15 @@ export default function VersionsPage() {
       </div>
 
       {/* Current Version Highlight */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-gradient-to-r from-[#00ade8] to-[#0099cc] rounded-lg">
+            <div className="p-2 bg-gradient-to-r bg-blue-400 rounded-lg">
               <Tag className="h-6 w-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-white">Current Stable Version</h3>
-              <p className="text-gray-400">Latest production release</p>
+              <p className="text-slate-400">Latest production release</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -221,10 +221,10 @@ export default function VersionsPage() {
             <span className="text-sm text-green-400 font-medium">v2.1.0</span>
           </div>
         </div>
-        <p className="text-gray-300 mb-4">
+        <p className="text-slate-200 mb-4">
           Enhanced AI Capabilities - Major update with improved AI processing, new knowledge base features, and enhanced chat interface
         </p>
-        <div className="flex items-center space-x-4 text-sm text-gray-400">
+        <div className="flex items-center space-x-4 text-sm text-slate-400">
           <div className="flex items-center space-x-1">
             <Calendar className="h-4 w-4" />
             <span>Released: Jan 15, 2024</span>
@@ -241,13 +241,13 @@ export default function VersionsPage() {
       </div>
 
       {/* Versions List */}
-      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
-        <div className="p-6 border-b border-white/10">
+      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-slate-700">
           <h3 className="text-lg font-semibold text-white">All Versions</h3>
         </div>
         <div className="divide-y divide-white/10">
           {versions.map((version) => (
-            <div key={version.id} className="p-6 hover:bg-white/5 transition-colors">
+            <div key={version.id} className="p-6 hover:bg-slate-700/50 transition-colors">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
@@ -261,7 +261,7 @@ export default function VersionsPage() {
                   </div>
                   
                   <h5 className="text-white font-medium mb-1">{version.name}</h5>
-                  <p className="text-gray-400 mb-3">{version.description}</p>
+                  <p className="text-slate-400 mb-3">{version.description}</p>
                   
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
                     <div className="flex items-center space-x-1">
@@ -283,7 +283,7 @@ export default function VersionsPage() {
                       <h6 className="text-sm font-medium text-white mb-2">Key Changes:</h6>
                       <ul className="space-y-1">
                         {version.changes.slice(0, 3).map((change, index) => (
-                          <li key={index} className="flex items-start space-x-2 text-sm text-gray-300">
+                          <li key={index} className="flex items-start space-x-2 text-sm text-slate-200">
                             <span className="text-purple-400 mt-1">•</span>
                             <span>{change}</span>
                           </li>
@@ -302,7 +302,7 @@ export default function VersionsPage() {
                       {version.tags.map((tag, index) => (
                         <span
                           key={index}
-                          className="text-xs px-2 py-1 bg-white/10 rounded-full text-gray-300"
+                          className="text-xs px-2 py-1 bg-slate-700/50 rounded-full text-slate-200"
                         >
                           {tag}
                         </span>
@@ -313,19 +313,19 @@ export default function VersionsPage() {
                 
                 <div className="flex items-center space-x-2 ml-4">
                   <button
-                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                     title="View Details"
                   >
                     <Eye className="h-4 w-4" />
                   </button>
                   <button
-                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                     title="Download"
                   >
                     <Download className="h-4 w-4" />
                   </button>
                   <button
-                    className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                    className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
                     title="Settings"
                   >
                     <Settings className="h-4 w-4" />
