@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Send, Bot, User, Loader2, ChevronDown, Brain, Users, MessageSquare, History, RefreshCw } from 'lucide-react'
+import { Send, Bot, User, Loader2, ChevronDown, Brain, Users, MessageSquare, History, RefreshCw, Database } from 'lucide-react'
 
 interface Message {
   id: string
@@ -31,9 +31,12 @@ export default function AskPage() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [agents, setAgents] = useState<any[]>([])
+  const [knowledgeBases, setKnowledgeBases] = useState<any[]>([])
   const [selectedAgent, setSelectedAgent] = useState<any | null>(null)
   const [selectedAgents, setSelectedAgents] = useState<any[]>([])
+  const [selectedKnowledgeBases, setSelectedKnowledgeBases] = useState<any[]>([])
   const [showAgentSelector, setShowAgentSelector] = useState(false)
+  const [showKBSelector, setShowKBSelector] = useState(false)
   const [enableDebate, setEnableDebate] = useState(true)
   const [enableMemory, setEnableMemory] = useState(true)
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null)
@@ -50,6 +53,7 @@ export default function AskPage() {
 
   useEffect(() => {
     fetchAgents()
+    fetchKnowledgeBases()
   }, [])
 
   const fetchAgents = async () => {
@@ -61,6 +65,18 @@ export default function AskPage() {
       }
     } catch (error) {
       console.error('Error fetching agents:', error)
+    }
+  }
+
+  const fetchKnowledgeBases = async () => {
+    try {
+      const response = await fetch('/api/knowledge-bases')
+      const data = await response.json()
+      if (data.success) {
+        setKnowledgeBases(data.data.knowledge_bases || [])
+      }
+    } catch (error) {
+      console.error('Error fetching knowledge bases:', error)
     }
   }
 
@@ -88,7 +104,8 @@ export default function AskPage() {
       const requestBody: any = {
         question: input,
         sessionId: currentSessionId,
-        enable_memory: enableMemory
+        enable_memory: enableMemory,
+        knowledge_base_ids: selectedKnowledgeBases.map(kb => kb.id)
       }
 
       if (selectedAgents.length > 1) {
@@ -181,6 +198,14 @@ export default function AskPage() {
     setSelectedAgents([])
   }
 
+  const handleKnowledgeBaseSelect = (kb: any) => {
+    if (selectedKnowledgeBases.find(k => k.id === kb.id)) {
+      setSelectedKnowledgeBases(prev => prev.filter(k => k.id !== kb.id))
+    } else {
+      setSelectedKnowledgeBases(prev => [...prev, kb])
+    }
+  }
+
   const getSelectedAgentsText = () => {
     if (selectedAgents.length > 0) {
       return `${selectedAgents.length} Agent${selectedAgents.length > 1 ? 's' : ''} Selected`
@@ -191,171 +216,238 @@ export default function AskPage() {
     return 'Gabi Default'
   }
 
+  const getSelectedKBText = () => {
+    if (selectedKnowledgeBases.length === 0) {
+      return 'All Knowledge Bases'
+    }
+    if (selectedKnowledgeBases.length === 1) {
+      return selectedKnowledgeBases[0].name
+    }
+    return `${selectedKnowledgeBases.length} Knowledge Bases Selected`
+  }
+
   return (
-    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight text-white">Chat with Gabi</h2>
-        <div className="flex items-center space-x-2">
-          {currentSessionId && (
+    <div className="dashboard-container">
+      {/* Agent and Knowledge Base Selectors */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+        {/* Agent Selector */}
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
+          <div className="flex-1 relative">
             <button
-              onClick={() => setShowSessionInfo(!showSessionInfo)}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
-              title="Session Information"
+              onClick={() => setShowAgentSelector(!showAgentSelector)}
+              className="w-full bg-slate-700/50 border border-slate-700 rounded-lg p-4 flex items-center justify-between hover:bg-slate-700/50 transition-colors"
             >
-              <History className="h-5 w-5" />
-            </button>
-          )}
-          <button
-            onClick={startNewSession}
-            className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg transition-colors"
-            title="New Session"
-          >
-            <RefreshCw className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-
-      {/* Agent Selector */}
-      <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
-        <div className="flex-1 relative">
-          <button
-            onClick={() => setShowAgentSelector(!showAgentSelector)}
-            className="w-full bg-slate-700/50 border border-slate-700 rounded-lg p-4 flex items-center justify-between hover:bg-slate-700/50 transition-colors"
-          >
-            <div className="flex items-center space-x-3">
-              {selectedAgents.length > 1 ? (
-                <Users className="h-5 w-5 text-[#00ade8]" />
-              ) : (
-                <Brain className="h-5 w-5 text-[#00ade8]" />
-              )}
-              <div className="text-left">
-                <p className="text-sm text-slate-200">Selected Agent(s)</p>
-                <p className="font-medium text-white">
-                  {getSelectedAgentsText()}
-                </p>
-              </div>
-            </div>
-            <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${showAgentSelector ? 'rotate-180' : ''}`} />
-          </button>
-
-          {showAgentSelector && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
-              <div className="p-4">
-                {/* Memory Toggle */}
-                <div className="p-3 border-b border-slate-700">
-                  <label className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      checked={enableMemory}
-                      onChange={(e) => setEnableMemory(e.target.checked)}
-                      className="rounded border-slate-600 bg-slate-700/50 text-[#00ade8] focus:ring-blue-400"
-                    />
-                    <span className="text-sm text-slate-200">Enable conversational memory</span>
-                  </label>
+              <div className="flex items-center space-x-3">
+                {selectedAgents.length > 1 ? (
+                  <Users className="h-5 w-5 text-[#00ade8]" />
+                ) : (
+                  <Brain className="h-5 w-5 text-[#00ade8]" />
+                )}
+                <div className="text-left">
+                  <p className="text-sm text-slate-200">Selected Agent(s)</p>
+                  <p className="font-medium text-white">
+                    {getSelectedAgentsText()}
+                  </p>
                 </div>
+              </div>
+              <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${showAgentSelector ? 'rotate-180' : ''}`} />
+            </button>
 
-                {/* Debate Toggle */}
-                {selectedAgents.length > 1 && (
+            {showAgentSelector && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                <div className="p-4">
+                  {/* Memory Toggle */}
                   <div className="p-3 border-b border-slate-700">
                     <label className="flex items-center space-x-2">
                       <input
                         type="checkbox"
-                        checked={enableDebate}
-                        onChange={(e) => setEnableDebate(e.target.checked)}
+                        checked={enableMemory}
+                        onChange={(e) => setEnableMemory(e.target.checked)}
                         className="rounded border-slate-600 bg-slate-700/50 text-[#00ade8] focus:ring-blue-400"
                       />
-                      <span className="text-sm text-slate-200">Enable debate between agents</span>
+                      <span className="text-sm text-slate-200">Enable conversational memory</span>
                     </label>
                   </div>
-                )}
 
-                {/* Single Agent Option */}
-                <button
-                  onClick={() => {
-                    handleSingleAgentSelect(null)
-                    setShowAgentSelector(false)
-                  }}
-                  className={`w-full p-3 rounded-lg text-left transition-colors ${
-                    !selectedAgent && selectedAgents.length === 0
-                      ? 'bg-[#00ade8]/20 border border-[#00ade8]'
-                      : 'hover:bg-slate-700/50'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <Bot className="h-5 w-5 text-[#00ade8]" />
-                    <div>
-                      <p className="font-medium text-white">Gabi Default</p>
-                      <p className="text-sm text-slate-200">General assistant for documents</p>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Single Agent Selection */}
-                <div className="mt-2">
-                  <p className="text-xs text-slate-400 px-3 py-1">Single Agent:</p>
-                  {agents.map((agent) => (
-                    <button
-                      key={agent.id}
-                      onClick={() => {
-                        handleSingleAgentSelect(agent)
-                        setShowAgentSelector(false)
-                      }}
-                      className={`w-full p-3 rounded-lg text-left transition-colors ${
-                        selectedAgent?.id === agent.id
-                          ? 'bg-[#00ade8]/20 border border-[#00ade8]'
-                          : 'hover:bg-slate-700/50'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="text-xl">{agent.icon}</div>
-                        <div>
-                          <p className="font-medium text-white">{agent.name}</p>
-                          <p className="text-sm text-slate-200">{agent.title}</p>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Multiple Agents Selection */}
-                <div className="mt-2">
-                  <p className="text-xs text-slate-400 px-3 py-1">Multiple Agents (Debate):</p>
-                  {agents.map((agent) => (
-                    <button
-                      key={`multi-${agent.id}`}
-                      onClick={() => handleAgentSelect(agent)}
-                      className={`w-full p-3 rounded-lg text-left transition-colors ${
-                        selectedAgents.find(a => a.id === agent.id)
-                          ? 'bg-[#00ade8]/20 border border-[#00ade8]'
-                          : 'hover:bg-slate-700/50'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-3">
+                  {/* Debate Toggle */}
+                  {selectedAgents.length > 1 && (
+                    <div className="p-3 border-b border-slate-700">
+                      <label className="flex items-center space-x-2">
                         <input
                           type="checkbox"
-                          checked={selectedAgents.find(a => a.id === agent.id) !== undefined}
-                          readOnly
+                          checked={enableDebate}
+                          onChange={(e) => setEnableDebate(e.target.checked)}
                           className="rounded border-slate-600 bg-slate-700/50 text-[#00ade8] focus:ring-blue-400"
                         />
-                        <div className="text-xl">{agent.icon}</div>
-                        <div>
-                          <p className="font-medium text-white">{agent.name}</p>
-                          <p className="text-sm text-slate-200">{agent.title}</p>
-                        </div>
+                        <span className="text-sm text-slate-200">Enable debate between agents</span>
+                      </label>
+                    </div>
+                  )}
+
+                  {/* Single Agent Option */}
+                  <button
+                    onClick={() => {
+                      handleSingleAgentSelect(null)
+                      setShowAgentSelector(false)
+                    }}
+                    className={`w-full p-3 rounded-lg text-left transition-colors ${
+                      !selectedAgent && selectedAgents.length === 0
+                        ? 'bg-[#00ade8]/20 border border-[#00ade8]'
+                        : 'hover:bg-slate-700/50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Bot className="h-5 w-5 text-[#00ade8]" />
+                      <div>
+                        <p className="font-medium text-white">Gabi Default</p>
+                        <p className="text-sm text-slate-200">General assistant for documents</p>
                       </div>
-                    </button>
-                  ))}
+                    </div>
+                  </button>
+
+                  {/* Single Agent Selection */}
+                  <div className="mt-2">
+                    <p className="text-xs text-slate-400 px-3 py-1">Single Agent:</p>
+                    {agents.map((agent) => (
+                      <button
+                        key={agent.id}
+                        onClick={() => {
+                          handleSingleAgentSelect(agent)
+                          setShowAgentSelector(false)
+                        }}
+                        className={`w-full p-3 rounded-lg text-left transition-colors ${
+                          selectedAgent?.id === agent.id
+                            ? 'bg-[#00ade8]/20 border border-[#00ade8]'
+                            : 'hover:bg-slate-700/50'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className="text-xl">{agent.icon}</div>
+                          <div>
+                            <p className="font-medium text-white">{agent.name}</p>
+                            <p className="text-sm text-slate-200">{agent.title}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Multiple Agents Selection */}
+                  <div className="mt-2">
+                    <p className="text-xs text-slate-400 px-3 py-1">Multiple Agents (Debate):</p>
+                    {agents.map((agent) => (
+                      <button
+                        key={`multi-${agent.id}`}
+                        onClick={() => handleAgentSelect(agent)}
+                        className={`w-full p-3 rounded-lg text-left transition-colors ${
+                          selectedAgents.find(a => a.id === agent.id)
+                            ? 'bg-[#00ade8]/20 border border-[#00ade8]'
+                            : 'hover:bg-slate-700/50'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedAgents.find(a => a.id === agent.id) !== undefined}
+                            readOnly
+                            className="rounded border-slate-600 bg-slate-700/50 text-[#00ade8] focus:ring-blue-400"
+                          />
+                          <div className="text-xl">{agent.icon}</div>
+                          <div>
+                            <p className="font-medium text-white">{agent.name}</p>
+                            <p className="text-sm text-slate-200">{agent.title}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
+
+        {/* Knowledge Base Selector */}
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
+          <div className="flex-1 relative">
+            <button
+              onClick={() => setShowKBSelector(!showKBSelector)}
+              className="w-full bg-slate-700/50 border border-slate-700 rounded-lg p-4 flex items-center justify-between hover:bg-slate-700/50 transition-colors"
+            >
+              <div className="flex items-center space-x-3">
+                <Database className="h-5 w-5 text-[#00ade8]" />
+                <div className="text-left">
+                  <p className="text-sm text-slate-200">Knowledge Bases</p>
+                  <p className="font-medium text-white">
+                    {getSelectedKBText()}
+                  </p>
+                </div>
+              </div>
+              <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${showKBSelector ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showKBSelector && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                <div className="p-4">
+                  {/* Select All Option */}
+                  <button
+                    onClick={() => {
+                      setSelectedKnowledgeBases([])
+                      setShowKBSelector(false)
+                    }}
+                    className={`w-full p-3 rounded-lg text-left transition-colors ${
+                      selectedKnowledgeBases.length === 0
+                        ? 'bg-[#00ade8]/20 border border-[#00ade8]'
+                        : 'hover:bg-slate-700/50'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Database className="h-5 w-5 text-[#00ade8]" />
+                      <div>
+                        <p className="font-medium text-white">All Knowledge Bases</p>
+                        <p className="text-sm text-slate-200">Search across all available knowledge</p>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Individual Knowledge Base Selection */}
+                  <div className="mt-2">
+                    <p className="text-xs text-slate-400 px-3 py-1">Specific Knowledge Bases:</p>
+                    {knowledgeBases.map((kb) => (
+                      <button
+                        key={kb.id}
+                        onClick={() => handleKnowledgeBaseSelect(kb)}
+                        className={`w-full p-3 rounded-lg text-left transition-colors ${
+                          selectedKnowledgeBases.find(k => k.id === kb.id)
+                            ? 'bg-[#00ade8]/20 border border-[#00ade8]'
+                            : 'hover:bg-slate-700/50'
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedKnowledgeBases.find(k => k.id === kb.id) !== undefined}
+                            readOnly
+                            className="rounded border-slate-600 bg-slate-700/50 text-[#00ade8] focus:ring-blue-400"
+                          />
+                          <div>
+                            <p className="font-medium text-white">{kb.name}</p>
+                            <p className="text-sm text-slate-200">{kb.description}</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Session Info */}
       {showSessionInfo && currentSessionId && (
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4 mb-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-slate-200">Active Session</p>

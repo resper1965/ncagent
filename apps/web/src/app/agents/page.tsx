@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Brain, Database, Settings, Users, Zap, Clock, CheckCircle, AlertCircle, MoreVertical, Eye } from 'lucide-react'
+import { Plus, Edit, Trash2, Brain, Database, Settings, Users, Zap, Clock, CheckCircle, AlertCircle, MoreVertical, Eye, FileText } from 'lucide-react'
 
 interface AgentPersona {
   id: string
@@ -26,6 +26,7 @@ interface AgentDataset {
   category: string
   priority: number
   created_at: string
+  file_type?: string
 }
 
 export default function AgentsPage() {
@@ -211,55 +212,55 @@ export default function AgentsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-6 md:grid-cols-4">
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
+      <div className="grid gap-4 md:grid-cols-4">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
-              <Brain className="h-6 w-6 text-blue-400" />
+              <Brain className="h-5 w-5 text-blue-400" />
             </div>
             <div>
               <p className="text-sm text-slate-400">Total Agents</p>
-              <p className="text-2xl font-bold text-white">{agents.length}</p>
+              <p className="text-xl font-bold text-white">{agents.length}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-green-500/20 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-400" />
+              <CheckCircle className="h-5 w-5 text-green-400" />
             </div>
             <div>
               <p className="text-sm text-slate-400">Active</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {agents.filter(a => a.status === 'active').length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-purple-500/20 rounded-lg">
-              <Database className="h-6 w-6 text-purple-400" />
+              <Database className="h-5 w-5 text-purple-400" />
             </div>
             <div>
               <p className="text-sm text-slate-400">Total Datasets</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {agents.reduce((sum, agent) => sum + agent.dataset_count, 0)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-6">
+        <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl p-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-yellow-500/20 rounded-lg">
-              <Zap className="h-6 w-6 text-yellow-400" />
+              <Zap className="h-5 w-5 text-yellow-400" />
             </div>
             <div>
               <p className="text-sm text-slate-400">Conversations</p>
-              <p className="text-2xl font-bold text-white">
+              <p className="text-xl font-bold text-white">
                 {agents.reduce((sum, agent) => sum + agent.conversation_count, 0)}
               </p>
             </div>
@@ -267,11 +268,11 @@ export default function AgentsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Agents List */}
         <div className="lg:col-span-1">
           <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
-            <div className="p-6 border-b border-slate-700">
+            <div className="p-4 border-b border-slate-700">
               <h3 className="text-lg font-semibold text-white">Available Agents</h3>
             </div>
             <div className="p-4">
@@ -286,7 +287,7 @@ export default function AgentsPage() {
                   {agents.map((agent) => (
                     <div
                       key={agent.id}
-                      className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                      className={`p-3 rounded-xl cursor-pointer transition-all duration-200 ${
                         selectedAgent?.id === agent.id
                           ? 'bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 border border-cyan-500/30'
                           : 'bg-slate-700/50 hover:bg-slate-700/50 border border-slate-700'
@@ -295,16 +296,16 @@ export default function AgentsPage() {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="text-2xl">{agent.icon}</div>
+                          <div className="text-xl">{agent.icon}</div>
                           <div>
-                            <h3 className="font-medium text-white">{agent.name}</h3>
-                            <p className="text-sm text-slate-400">{agent.title}</p>
+                            <h3 className="font-medium text-white text-sm">{agent.name}</h3>
+                            <p className="text-xs text-slate-400">{agent.title}</p>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1">
                           <div className="flex items-center space-x-1">
                             {getStatusIcon(agent.status)}
-                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(agent.status)}`}>
+                            <span className={`text-xs px-1 py-0.5 rounded-full ${getStatusColor(agent.status)}`}>
                               {getStatusText(agent.status)}
                             </span>
                           </div>
@@ -316,7 +317,7 @@ export default function AgentsPage() {
                             }}
                             className="p-1 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded transition-colors"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3 w-3" />
                           </button>
                           <button
                             onClick={(e) => {
@@ -325,7 +326,7 @@ export default function AgentsPage() {
                             }}
                             className="p-1 text-slate-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3" />
                           </button>
                         </div>
                       </div>
@@ -338,7 +339,7 @@ export default function AgentsPage() {
         </div>
 
         {/* Agent Details */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           {selectedAgent ? (
             <div className="space-y-6">
               {/* Agent Information */}
@@ -403,14 +404,33 @@ export default function AgentsPage() {
               {/* Agent Datasets */}
               <div className="bg-slate-800 backdrop-blur-sm border border-slate-700 rounded-xl overflow-hidden">
                 <div className="p-6 border-b border-slate-700">
-                  <h3 className="text-lg font-semibold text-white">Knowledge Datasets</h3>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-white">Knowledge Datasets</h3>
+                    <div className="flex items-center space-x-2 text-sm text-slate-400">
+                      <FileText className="h-4 w-4" />
+                      <span>Supported formats: JSON, CSV</span>
+                    </div>
+                  </div>
                 </div>
                 <div className="p-6">
                   {agentDatasets.length === 0 ? (
                     <div className="text-center py-8">
                       <Database className="mx-auto h-12 w-12 text-slate-400 mb-4" />
                       <h4 className="text-lg font-medium text-white mb-2">No datasets found</h4>
-                      <p className="text-slate-400">Add datasets to customize the agent's knowledge</p>
+                      <p className="text-slate-400 mb-4">Add datasets to customize the agent's knowledge</p>
+                      <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+                        <h5 className="text-sm font-medium text-white mb-2">Supported File Types:</h5>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                            <span className="text-slate-300">JSON (.json)</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="w-2 h-2 bg-green-400 rounded-full"></span>
+                            <span className="text-slate-300">CSV (.csv)</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -418,14 +438,21 @@ export default function AgentsPage() {
                         <div key={dataset.id} className="p-4 bg-slate-700/50 rounded-xl border border-slate-700">
                           <div className="flex items-center justify-between mb-2">
                             <h4 className="font-medium text-white">{dataset.name}</h4>
-                            <span className={`px-2 py-1 rounded-full text-xs ${
-                              dataset.category === 'knowledge' ? 'bg-blue-500/20 text-blue-300' :
-                              dataset.category === 'examples' ? 'bg-green-500/20 text-green-300' :
-                              dataset.category === 'procedures' ? 'bg-yellow-500/20 text-yellow-300' :
-                              'bg-purple-500/20 text-purple-300'
-                            }`}>
-                              {dataset.category}
-                            </span>
+                            <div className="flex items-center space-x-2">
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                dataset.category === 'knowledge' ? 'bg-blue-500/20 text-blue-300' :
+                                dataset.category === 'examples' ? 'bg-green-500/20 text-green-300' :
+                                dataset.category === 'procedures' ? 'bg-yellow-500/20 text-yellow-300' :
+                                'bg-purple-500/20 text-purple-300'
+                              }`}>
+                                {dataset.category}
+                              </span>
+                              {dataset.file_type && (
+                                <span className="px-2 py-1 bg-slate-600/50 text-slate-300 rounded-full text-xs">
+                                  {dataset.file_type.toUpperCase()}
+                                </span>
+                              )}
+                            </div>
                           </div>
                           <p className="text-sm text-slate-200 mb-2">{dataset.description}</p>
                           <div className="text-xs text-slate-400">
