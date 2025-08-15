@@ -420,7 +420,7 @@ export default function AskPage() {
                   <div
                     className={`max-w-[80%] rounded-xl p-4 ${
                       message.role === 'user'
-                        ? 'bg-gradient-to-r from-cyan-500 to-cyan-600 text-white'
+                        ? 'bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white'
                         : 'bg-white/5 text-white border border-white/10'
                     }`}
                   >
@@ -554,7 +554,7 @@ export default function AskPage() {
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
-                className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-lg hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                className="px-6 py-3 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white rounded-lg hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
               >
                 <Send className="h-5 w-5" />
               </button>

@@ -203,7 +203,7 @@ export default function AgentsPage() {
         </div>
         <button 
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+          className="px-4 py-2 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white font-medium rounded-xl hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
         >
           <Plus className="h-4 w-4" />
           <span>Create Agent</span>
@@ -355,7 +355,7 @@ export default function AgentsPage() {
                   </div>
                   <button
                     onClick={() => setShowDatasetModal(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-medium rounded-xl hover:from-cyan-600 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                    className="px-4 py-2 bg-gradient-to-r from-[#00ade8] to-[#0099cc] text-white font-medium rounded-xl hover:from-[#0099cc] hover:to-[#0088bb] transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
                   >
                     <Database className="h-4 w-4" />
                     <span>Add Dataset</span>
