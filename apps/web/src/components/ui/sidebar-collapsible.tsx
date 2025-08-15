@@ -21,7 +21,7 @@ export function SidebarCollapsible() {
                 alt="Ionic Health Logo" 
                 className="h-6 w-auto"
               />
-              <h1 className="text-xl font-bold text-white">Gabi</h1>
+                                        <h1 className="text-xl text-white">Gabi</h1>
             </div>
           ) : (
             <img 
