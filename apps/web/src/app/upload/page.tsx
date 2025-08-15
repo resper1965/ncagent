@@ -62,13 +62,27 @@ export default function UploadPage() {
   }
 
   const uploadFile = async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
-
     try {
+      // Converter arquivo para base64
+      const base64 = await fileToBase64(file)
+      
+      // Preparar dados para API
+      const uploadData = {
+        title: file.name,
+        source: 'web-upload',
+        versionTag: 'v1.0',
+        scope: 'GENERAL',
+        classification: 'PUBLIC',
+        fileContent: base64,
+        mimeType: file.type
+      }
+
       const response = await fetch('/api/upload', {
         method: 'POST',
-        body: formData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(uploadData)
       })
 
       const data = await response.json()
@@ -76,11 +90,26 @@ export default function UploadPage() {
       if (data.success) {
         updateFileStatus(file.name, 'completed', 100)
       } else {
-        updateFileStatus(file.name, 'error', 0, data.error)
+        updateFileStatus(file.name, 'error', 0, data.error || 'Upload failed')
       }
     } catch (error) {
+      console.error('Upload error:', error)
       updateFileStatus(file.name, 'error', 0, 'Upload failed')
     }
+  }
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => {
+        const base64 = reader.result as string
+        // Remover prefixo data:application/pdf;base64,
+        const base64Clean = base64.split(',')[1]
+        resolve(base64Clean)
+      }
+      reader.onerror = error => reject(error)
+    })
   }
 
   const updateFileStatus = (fileName: string, status: UploadedFile['status'], progress: number, error?: string) => {

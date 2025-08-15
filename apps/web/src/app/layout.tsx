@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { SidebarCollapsible } from '../components/ui/sidebar-collapsible'
-import { PageTitle } from '../components/ui/page-title'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,9 +26,6 @@ export default function RootLayout({
           <div className="flex flex-1 flex-col">
             <header className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border-b border-white/10">
               <div className="flex h-16 items-center px-4 shadow-sm sm:px-6 lg:px-8">
-                <div className="flex-1"></div>
-                <PageTitle />
-                <div className="flex-1"></div>
               </div>
             </header>
             <main className="flex-1 bg-[#121212]">
