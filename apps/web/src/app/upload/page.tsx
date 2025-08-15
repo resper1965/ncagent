@@ -1,254 +1,363 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { Upload, FileText, CheckCircle, AlertCircle, X, Loader2 } from 'lucide-react'
-import { Navbar } from '../../components/ui/navbar'
+import { useState, useRef } from 'react'
+import { Upload, File, X, CheckCircle, AlertCircle, Loader2, Cloud, Database, Brain } from 'lucide-react'
 
-interface UploadStatus {
-  status: 'idle' | 'uploading' | 'success' | 'error'
-  message: string
-  progress?: number
+interface UploadedFile {
+  id: string
+  name: string
+  size: number
+  type: string
+  status: 'uploading' | 'processing' | 'completed' | 'error'
+  progress: number
+  error?: string
 }
 
 export default function UploadPage() {
-  const [files, setFiles] = useState<File[]>([])
-  const [uploadStatus, setUploadStatus] = useState<UploadStatus>({
-    status: 'idle',
-    message: ''
-  })
-  const [dragActive, setDragActive] = useState(false)
+  const [files, setFiles] = useState<UploadedFile[]>([])
+  const [isDragging, setIsDragging] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const onDrag = useCallback((e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
-    e.stopPropagation()
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else if (e.type === 'dragleave') {
-      setDragActive(false)
-    }
-  }, [])
+    setIsDragging(true)
+  }
 
-  const onDrop = useCallback((e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
+    setIsDragging(false)
+  }
 
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
     const droppedFiles = Array.from(e.dataTransfer.files)
-    const validFiles = droppedFiles.filter(file => 
-      file.type === 'application/pdf' || 
-      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    )
-
-    if (validFiles.length > 0) {
-      setFiles(prev => [...prev, ...validFiles])
-    }
-  }, [])
+    handleFiles(droppedFiles)
+  }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
-    const validFiles = selectedFiles.filter(file => 
-      file.type === 'application/pdf' || 
-      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    )
-    setFiles(prev => [...prev, ...validFiles])
+    handleFiles(selectedFiles)
   }
 
-  const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index))
-  }
-
-  const uploadFiles = async () => {
-    if (files.length === 0) return
-
-    setUploadStatus({
+  const handleFiles = async (fileList: File[]) => {
+    const newFiles: UploadedFile[] = fileList.map(file => ({
+      id: Math.random().toString(36).substr(2, 9),
+      name: file.name,
+      size: file.size,
+      type: file.type,
       status: 'uploading',
-      message: 'Enviando documentos...',
       progress: 0
-    })
+    }))
+
+    setFiles(prev => [...prev, ...newFiles])
+    setUploading(true)
+
+    for (const file of fileList) {
+      await uploadFile(file)
+    }
+
+    setUploading(false)
+  }
+
+  const uploadFile = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
 
     try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        
-        // Converter arquivo para base64
-        const base64 = await new Promise<string>((resolve) => {
-          const reader = new FileReader()
-          reader.onload = () => resolve(reader.result as string)
-          reader.readAsDataURL(file)
-        })
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      })
 
-        const fileContent = base64.split(',')[1] // Remove data:application/pdf;base64,
+      const data = await response.json()
 
-        // Enviar para API
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: file.name,
-            fileContent,
-            mimeType: file.type,
-            scope: 'GENERAL',
-            classification: 'INTERNAL'
-          })
-        })
-
-        if (!response.ok) {
-          throw new Error(`Erro ao enviar ${file.name}`)
-        }
-
-        // Atualizar progresso
-        const progress = ((i + 1) / files.length) * 100
-        setUploadStatus({
-          status: 'uploading',
-          message: `Enviando ${i + 1} de ${files.length} documentos...`,
-          progress
-        })
+      if (data.success) {
+        updateFileStatus(file.name, 'completed', 100)
+      } else {
+        updateFileStatus(file.name, 'error', 0, data.error)
       }
-
-      setUploadStatus({
-        status: 'success',
-        message: `${files.length} documento(s) enviado(s) com sucesso!`
-      })
-      setFiles([])
-
     } catch (error) {
-      console.error('Erro no upload:', error)
-      setUploadStatus({
-        status: 'error',
-        message: error instanceof Error ? error.message : 'Erro ao enviar documentos'
-      })
+      updateFileStatus(file.name, 'error', 0, 'Upload failed')
+    }
+  }
+
+  const updateFileStatus = (fileName: string, status: UploadedFile['status'], progress: number, error?: string) => {
+    setFiles(prev => prev.map(file => 
+      file.name === fileName 
+        ? { ...file, status, progress, error }
+        : file
+    ))
+  }
+
+  const removeFile = (fileId: string) => {
+    setFiles(prev => prev.filter(file => file.id !== fileId))
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  const getFileIcon = (type: string) => {
+    if (type.includes('pdf')) return '📄'
+    if (type.includes('word') || type.includes('document')) return '📝'
+    if (type.includes('excel') || type.includes('spreadsheet')) return '📊'
+    if (type.includes('image')) return '🖼️'
+    if (type.includes('text')) return '📄'
+    return '📁'
+  }
+
+  const getStatusIcon = (status: UploadedFile['status']) => {
+    switch (status) {
+      case 'uploading':
+        return <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
+      case 'processing':
+        return <Loader2 className="h-4 w-4 text-yellow-400 animate-spin" />
+      case 'completed':
+        return <CheckCircle className="h-4 w-4 text-green-400" />
+      case 'error':
+        return <AlertCircle className="h-4 w-4 text-red-400" />
+      default:
+        return null
+    }
+  }
+
+  const getStatusText = (status: UploadedFile['status']) => {
+    switch (status) {
+      case 'uploading':
+        return 'Uploading...'
+      case 'processing':
+        return 'Processing...'
+      case 'completed':
+        return 'Completed'
+      case 'error':
+        return 'Error'
+      default:
+        return ''
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950">
-      <Navbar />
+    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-white">Upload Documents</h2>
+          <p className="text-gray-400 mt-1">Upload your documents to make them searchable and queryable</p>
+        </div>
+      </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* Page Header */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-                <Upload className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-white">Upload de Documentos</h1>
-                <p className="text-gray-300">Envie documentos para o n.agent</p>
-              </div>
+      {/* Upload Stats */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <Cloud className="h-6 w-6 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Total Uploaded</p>
+              <p className="text-2xl font-bold text-white">1,234</p>
             </div>
           </div>
+        </div>
 
-          {/* Upload Area */}
-          <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-8 mb-8">
-            <div
-              className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
-                dragActive 
-                  ? 'border-primary bg-primary/10' 
-                  : 'border-gray-600 hover:border-gray-500'
-              }`}
-              onDragEnter={onDrag}
-              onDragLeave={onDrag}
-              onDragOver={onDrag}
-              onDrop={onDrop}
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <Database className="h-6 w-6 text-green-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Processed</p>
+              <p className="text-2xl font-bold text-white">1,189</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-purple-500/20 rounded-lg">
+              <Brain className="h-6 w-6 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Vectorized</p>
+              <p className="text-2xl font-bold text-white">1,156</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Upload Area */}
+      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-8">
+        <div
+          className={`border-2 border-dashed rounded-xl p-12 text-center transition-all duration-200 ${
+            isDragging
+              ? 'border-purple-400 bg-purple-500/10'
+              : 'border-white/20 hover:border-white/40 hover:bg-white/5'
+          }`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-6">
+            <Upload className="h-8 w-8 text-white" />
+          </div>
+          
+          <h3 className="text-xl font-semibold text-white mb-2">
+            Drop your files here
+          </h3>
+          
+          <p className="text-gray-400 mb-6 max-w-md mx-auto">
+            Upload PDFs, Word documents, Excel files, images, and text files. 
+            We'll process and make them searchable.
+          </p>
+          
+          <div className="flex items-center justify-center space-x-4">
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
-              <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Arraste e solte seus documentos aqui
-              </h3>
-              <p className="text-gray-300 mb-4">
-                Suporta arquivos PDF e DOCX até 10MB cada
-              </p>
-              <label className="inline-flex items-center justify-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  multiple
-                  accept=".pdf,.docx"
-                  onChange={handleFileSelect}
-                  className="hidden"
-                />
-                Selecionar Arquivos
-              </label>
+              Choose Files
+            </button>
+            <span className="text-gray-400">or drag and drop</span>
+          </div>
+          
+          <div className="mt-6 text-xs text-gray-500">
+            <p>Supported formats: PDF, DOC, DOCX, XLS, XLSX, TXT, PNG, JPG, GIF</p>
+            <p>Maximum file size: 50MB per file</p>
+          </div>
+        </div>
+        
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          onChange={handleFileSelect}
+          className="hidden"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.png,.jpg,.jpeg,.gif"
+        />
+      </div>
+
+      {/* File List */}
+      {files.length > 0 && (
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Upload Queue</h3>
+          
+          <div className="space-y-3">
+            {files.map((file) => (
+              <div
+                key={file.id}
+                className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10"
+              >
+                <div className="flex items-center space-x-3 flex-1">
+                  <div className="text-2xl">{getFileIcon(file.type)}</div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium truncate">{file.name}</p>
+                    <p className="text-sm text-gray-400">{formatFileSize(file.size)}</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  {/* Progress Bar */}
+                  {file.status === 'uploading' && (
+                    <div className="w-24 bg-white/10 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${file.progress}%` }}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Status */}
+                  <div className="flex items-center space-x-2">
+                    {getStatusIcon(file.status)}
+                    <span className={`text-sm ${
+                      file.status === 'completed' ? 'text-green-400' :
+                      file.status === 'error' ? 'text-red-400' :
+                      file.status === 'processing' ? 'text-yellow-400' :
+                      'text-blue-400'
+                    }`}>
+                      {getStatusText(file.status)}
+                    </span>
+                  </div>
+                  
+                  {/* Error Message */}
+                  {file.error && (
+                    <p className="text-sm text-red-400 max-w-xs truncate">{file.error}</p>
+                  )}
+                  
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => removeFile(file.id)}
+                    className="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {uploading && (
+            <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <Loader2 className="h-4 w-4 text-blue-400 animate-spin" />
+                <span className="text-blue-400">Processing uploads...</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Upload Tips */}
+      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Upload Tips</h3>
+        
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-green-500/20 rounded-lg mt-0.5">
+              <CheckCircle className="h-4 w-4 text-green-400" />
+            </div>
+            <div>
+              <p className="text-white font-medium">High Quality Results</p>
+              <p className="text-sm text-gray-400">Use clear, well-formatted documents for better AI understanding</p>
             </div>
           </div>
-
-          {/* File List */}
-          {files.length > 0 && (
-            <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6 mb-8">
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Arquivos Selecionados ({files.length})
-              </h3>
-              <div className="space-y-3">
-                {files.map((file, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="h-5 w-5 text-gray-400" />
-                      <div>
-                        <p className="font-medium text-white">{file.name}</p>
-                        <p className="text-sm text-gray-300">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeFile(index)}
-                      className="text-red-400 hover:text-red-300 transition-colors"
-                    >
-                      Remover
-                    </button>
-                  </div>
-                ))}
-              </div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-blue-500/20 rounded-lg mt-0.5">
+              <File className="h-4 w-4 text-blue-400" />
             </div>
-          )}
-
-          {/* Upload Status */}
-          {uploadStatus.status !== 'idle' && (
-            <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6 mb-8">
-              <div className="flex items-center space-x-3 mb-4">
-                {uploadStatus.status === 'uploading' && (
-                  <Loader2 className="h-5 w-5 text-blue-400 animate-spin" />
-                )}
-                {uploadStatus.status === 'success' && (
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                )}
-                {uploadStatus.status === 'error' && (
-                  <AlertCircle className="h-5 w-5 text-red-400" />
-                )}
-                <p className={`font-medium ${
-                  uploadStatus.status === 'success' ? 'text-green-300' :
-                  uploadStatus.status === 'error' ? 'text-red-300' :
-                  'text-blue-300'
-                }`}>
-                  {uploadStatus.message}
-                </p>
-              </div>
-              {uploadStatus.progress !== undefined && (
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${uploadStatus.progress}%` }}
-                  />
-                </div>
-              )}
+            <div>
+              <p className="text-white font-medium">Multiple Formats</p>
+              <p className="text-sm text-gray-400">Upload various file types to build a comprehensive knowledge base</p>
             </div>
-          )}
-
-          {/* Upload Button */}
-          {files.length > 0 && uploadStatus.status === 'idle' && (
-            <div className="text-center">
-              <button
-                onClick={uploadFiles}
-                className="inline-flex items-center justify-center px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                <Upload className="mr-2 h-5 w-5" />
-                Enviar {files.length} Documento(s)
-              </button>
+          </div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-purple-500/20 rounded-lg mt-0.5">
+              <Brain className="h-4 w-4 text-purple-400" />
             </div>
-          )}
+            <div>
+              <p className="text-white font-medium">AI Processing</p>
+              <p className="text-sm text-gray-400">Documents are automatically processed and made searchable</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-3">
+            <div className="p-2 bg-yellow-500/20 rounded-lg mt-0.5">
+              <AlertCircle className="h-4 w-4 text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-white font-medium">File Size Limits</p>
+              <p className="text-sm text-gray-400">Keep files under 50MB for optimal processing speed</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -73,8 +73,6 @@ export default function RootLayout({
                         <p className="text-xs text-gray-400">AI Assistant</p>
                       </div>
                     </div>
-                    
-                    <span className="text-sm text-gray-400">Powered by n.Agent</span>
                   </div>
                 </div>
               </div>

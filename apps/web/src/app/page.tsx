@@ -8,14 +8,14 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight text-white">Welcome to Gabi</h2>
         <div className="flex items-center space-x-2">
-          <Button asChild>
-            <Link href="/ask">
-              Start Chat
-              <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <Link href="/ask">
+            <button className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
-            </Link>
-          </Button>
+              Start Chat
+            </button>
+          </Link>
         </div>
       </div>
       
@@ -82,41 +82,41 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Button asChild className="w-full justify-start bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-              <Link href="/ask">
-                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/ask">
+              <button className="w-full flex items-center justify-start px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
                 Start New Chat
-              </Link>
-            </Button>
+              </button>
+            </Link>
             
-            <Button asChild variant="outline" className="w-full justify-start border-white/10 bg-white/5 hover:bg-white/10">
-              <Link href="/upload">
-                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/upload">
+              <button className="w-full flex items-center justify-start px-4 py-3 border border-white/10 bg-white/5 text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-200">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
                 Upload Documents
-              </Link>
-            </Button>
+              </button>
+            </Link>
             
-            <Button asChild variant="outline" className="w-full justify-start border-white/10 bg-white/5 hover:bg-white/10">
-              <Link href="/documents">
-                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/documents">
+              <button className="w-full flex items-center justify-start px-4 py-3 border border-white/10 bg-white/5 text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-200">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Browse Documents
-              </Link>
-            </Button>
+              </button>
+            </Link>
             
-            <Button asChild variant="outline" className="w-full justify-start border-white/10 bg-white/5 hover:bg-white/10">
-              <Link href="/knowledge-bases">
-                <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <Link href="/knowledge-bases">
+              <button className="w-full flex items-center justify-start px-4 py-3 border border-white/10 bg-white/5 text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-200">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                 </svg>
                 Knowledge Bases
-              </Link>
-            </Button>
+              </button>
+            </Link>
           </div>
         </CardContent>
       </Card>

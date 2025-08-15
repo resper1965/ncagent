@@ -1,222 +1,442 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card-simple'
-import { Badge } from '../../components/ui/badge-simple'
-import { Button } from '../../components/ui/button-simple'
+import { Search, Plus, Settings, Database, Users, Clock, CheckCircle, AlertCircle, ToggleLeft, ToggleRight, MoreVertical, Eye, Edit, Trash2, FolderOpen, Brain, Zap } from 'lucide-react'
 
 interface KnowledgeBase {
   id: string
   name: string
   description: string
+  documentCount: number
+  chunkCount: number
+  createdAt: string
+  updatedAt: string
+  status: 'active' | 'inactive' | 'processing'
+  chatEnabled: boolean
+  tags: string[]
+  owner: string
   version: string
-  is_active: boolean
-  is_enabled_for_chat: boolean
-  document_count: number
-  created_at: string
 }
 
 export default function KnowledgeBasesPage() {
   const [knowledgeBases, setKnowledgeBases] = useState<KnowledgeBase[]>([])
   const [loading, setLoading] = useState(true)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState('all')
 
   useEffect(() => {
-    // Simular carregamento de dados
-    setTimeout(() => {
-      setKnowledgeBases([
-        {
-          id: '1',
-          name: 'Documentation v1.0',
-          description: 'Core application documentation',
-          version: '1.0.0',
-          is_active: true,
-          is_enabled_for_chat: true,
-          document_count: 15,
-          created_at: '2024-01-15'
-        },
-        {
-          id: '2',
-          name: 'API Reference v1.0',
-          description: 'API documentation and examples',
-          version: '1.0.0',
-          is_active: true,
-          is_enabled_for_chat: false,
-          document_count: 8,
-          created_at: '2024-01-20'
-        },
-        {
-          id: '3',
-          name: 'Security Guidelines v2.0',
-          description: 'Security best practices and compliance',
-          version: '2.0.0',
-          is_active: false,
-          is_enabled_for_chat: false,
-          document_count: 12,
-          created_at: '2024-02-01'
-        }
-      ])
-      setLoading(false)
-    }, 1000)
+    fetchKnowledgeBases()
   }, [])
 
-  const getStatusBadge = (kb: KnowledgeBase) => {
-    if (!kb.is_active) {
-      return <Badge variant="secondary">Inactive</Badge>
+  const fetchKnowledgeBases = async () => {
+    try {
+      const response = await fetch('/api/knowledge-bases')
+      const data = await response.json()
+      
+      if (data.success) {
+        setKnowledgeBases(data.data || [])
+      } else {
+        // Simulated data for demo
+        setKnowledgeBases([
+          {
+            id: '1',
+            name: 'Company Policies',
+            description: 'All company policies, procedures, and guidelines',
+            documentCount: 45,
+            chunkCount: 1234,
+            createdAt: '2024-01-01',
+            updatedAt: '2024-01-15',
+            status: 'active',
+            chatEnabled: true,
+            tags: ['policies', 'procedures', 'guidelines'],
+            owner: 'HR Department',
+            version: '2.1.0'
+          },
+          {
+            id: '2',
+            name: 'Technical Documentation',
+            description: 'API documentation, system architecture, and technical specs',
+            documentCount: 78,
+            chunkCount: 2156,
+            createdAt: '2024-01-05',
+            updatedAt: '2024-01-14',
+            status: 'active',
+            chatEnabled: true,
+            tags: ['api', 'architecture', 'technical'],
+            owner: 'Engineering Team',
+            version: '1.8.2'
+          },
+          {
+            id: '3',
+            name: 'Product Knowledge',
+            description: 'Product features, user guides, and FAQs',
+            documentCount: 32,
+            chunkCount: 892,
+            createdAt: '2024-01-10',
+            updatedAt: '2024-01-13',
+            status: 'processing',
+            chatEnabled: false,
+            tags: ['product', 'features', 'guides'],
+            owner: 'Product Team',
+            version: '1.2.0'
+          },
+          {
+            id: '4',
+            name: 'Sales Materials',
+            description: 'Sales presentations, case studies, and proposals',
+            documentCount: 23,
+            chunkCount: 567,
+            createdAt: '2024-01-08',
+            updatedAt: '2024-01-12',
+            status: 'inactive',
+            chatEnabled: false,
+            tags: ['sales', 'presentations', 'case-studies'],
+            owner: 'Sales Team',
+            version: '1.0.1'
+          },
+          {
+            id: '5',
+            name: 'Legal Documents',
+            description: 'Contracts, agreements, and legal documentation',
+            documentCount: 15,
+            chunkCount: 345,
+            createdAt: '2024-01-03',
+            updatedAt: '2024-01-11',
+            status: 'active',
+            chatEnabled: true,
+            tags: ['legal', 'contracts', 'agreements'],
+            owner: 'Legal Department',
+            version: '1.5.3'
+          }
+        ])
+      }
+    } catch (error) {
+      console.error('Error fetching knowledge bases:', error)
+    } finally {
+      setLoading(false)
     }
-    if (kb.is_enabled_for_chat) {
-      return <Badge className="bg-green-500/10 text-green-500 border-green-500">Chat Enabled</Badge>
-    }
-    return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500">Chat Disabled</Badge>
   }
 
-  const getVersionBadge = (version: string) => {
-    return <Badge variant="outline">{version}</Badge>
+  const filteredKnowledgeBases = knowledgeBases.filter(kb => {
+    const matchesSearch = kb.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         kb.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         kb.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    
+    const matchesStatus = selectedStatus === 'all' || kb.status === selectedStatus
+    
+    return matchesSearch && matchesStatus
+  })
+
+  const toggleChatEnabled = async (id: string, enabled: boolean) => {
+    try {
+      const response = await fetch(`/api/knowledge-bases/${id}/toggle-chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ enabled })
+      })
+
+      if (response.ok) {
+        setKnowledgeBases(prev => prev.map(kb => 
+          kb.id === id ? { ...kb, chatEnabled: enabled } : kb
+        ))
+      }
+    } catch (error) {
+      console.error('Error toggling chat:', error)
+    }
+  }
+
+  const getStatusIcon = (status: KnowledgeBase['status']) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-4 w-4 text-green-400" />
+      case 'processing':
+        return <Clock className="h-4 w-4 text-yellow-400" />
+      case 'inactive':
+        return <AlertCircle className="h-4 w-4 text-red-400" />
+      default:
+        return null
+    }
+  }
+
+  const getStatusText = (status: KnowledgeBase['status']) => {
+    switch (status) {
+      case 'active':
+        return 'Active'
+      case 'processing':
+        return 'Processing'
+      case 'inactive':
+        return 'Inactive'
+      default:
+        return ''
+    }
+  }
+
+  const getStatusColor = (status: KnowledgeBase['status']) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500/20 text-green-400'
+      case 'processing':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'inactive':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="flex items-center space-x-2">
+            <Clock className="h-6 w-6 text-purple-400 animate-spin" />
+            <span className="text-white">Loading knowledge bases...</span>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight text-white">Knowledge Bases</h2>
-        <Button asChild>
-          <a href="/knowledge-bases/new">
-            <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Create Knowledge Base
-          </a>
-        </Button>
+    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-white">Knowledge Bases</h2>
+          <p className="text-gray-400 mt-1">Manage segmented knowledge repositories with version control</p>
+        </div>
+        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2">
+          <Plus className="h-4 w-4" />
+          <span>Create Knowledge Base</span>
+        </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Knowledge Bases</CardTitle>
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{knowledgeBases.length}</div>
-            <p className="text-xs text-gray-400">Across all versions</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active for Chat</CardTitle>
-            <Badge className="bg-green-500/10 text-green-500 border-green-500">Enabled</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {knowledgeBases.filter(kb => kb.is_enabled_for_chat).length}
+      {/* Stats */}
+      <div className="grid gap-6 md:grid-cols-4">
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <Database className="h-6 w-6 text-blue-400" />
             </div>
-            <p className="text-xs text-gray-400">Available for queries</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Documents</CardTitle>
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {knowledgeBases.reduce((sum, kb) => sum + kb.document_count, 0)}
+            <div>
+              <p className="text-sm text-gray-400">Total Knowledge Bases</p>
+              <p className="text-2xl font-bold text-white">{knowledgeBases.length}</p>
             </div>
-            <p className="text-xs text-gray-400">Across all knowledge bases</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Available Versions</CardTitle>
-            <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">
-              {new Set(knowledgeBases.map(kb => kb.version)).size}
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <CheckCircle className="h-6 w-6 text-green-400" />
             </div>
-            <p className="text-xs text-gray-400">Application versions</p>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-sm text-gray-400">Active</p>
+              <p className="text-2xl font-bold text-white">
+                {knowledgeBases.filter(kb => kb.status === 'active').length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-purple-500/20 rounded-lg">
+              <Zap className="h-6 w-6 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Chat Enabled</p>
+              <p className="text-2xl font-bold text-white">
+                {knowledgeBases.filter(kb => kb.chatEnabled).length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-yellow-500/20 rounded-lg">
+              <Clock className="h-6 w-6 text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Processing</p>
+              <p className="text-2xl font-bold text-white">
+                {knowledgeBases.filter(kb => kb.status === 'processing').length}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Search */}
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search knowledge bases..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Status Filter */}
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="processing">Processing</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
       </div>
 
       {/* Knowledge Bases List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Knowledge Bases</CardTitle>
-          <CardDescription>Manage your segmented knowledge bases by application version</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center h-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <span className="ml-2 text-gray-500">Loading knowledge bases...</span>
-            </div>
-          ) : knowledgeBases.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-32 text-center">
-              <svg className="h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-              </svg>
-              <h3 className="text-lg font-medium mb-2 text-white">No knowledge bases found</h3>
-              <p className="text-gray-500 mb-4">
-                Create your first knowledge base to get started
-              </p>
-              <Button asChild>
-                <a href="/knowledge-bases/new">
-                  <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Create Knowledge Base
-                </a>
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {knowledgeBases.map((kb) => (
-                <div key={kb.id} className="flex items-center justify-between p-4 border border-gray-700 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex-shrink-0">
-                      <svg className="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-                      </svg>
+      <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
+        <div className="p-6 border-b border-white/10">
+          <h3 className="text-lg font-semibold text-white">
+            Knowledge Bases ({filteredKnowledgeBases.length})
+          </h3>
+        </div>
+
+        {filteredKnowledgeBases.length === 0 ? (
+          <div className="p-12 text-center">
+            <FolderOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+            <h3 className="text-lg font-medium text-white mb-2">No knowledge bases found</h3>
+            <p className="text-gray-400">
+              {searchTerm || selectedStatus !== 'all'
+                ? 'Try adjusting your search or filters'
+                : 'Create your first knowledge base to get started'
+              }
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-white/10">
+            {filteredKnowledgeBases.map((kb) => (
+              <div key={kb.id} className="p-6 hover:bg-white/5 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 flex-1">
+                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                      <Brain className="h-6 w-6 text-white" />
                     </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-white">{kb.name}</h3>
-                      <p className="text-sm text-gray-400">{kb.description}</p>
-                      <div className="flex items-center space-x-2 mt-1">
-                        {getVersionBadge(kb.version)}
-                        {getStatusBadge(kb)}
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h4 className="text-white font-medium truncate">{kb.name}</h4>
+                        <div className="flex items-center space-x-1">
+                          {getStatusIcon(kb.status)}
+                          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(kb.status)}`}>
+                            {getStatusText(kb.status)}
+                          </span>
+                          <span className="text-xs text-gray-500">v{kb.version}</span>
+                        </div>
                       </div>
+                      
+                      <p className="text-sm text-gray-400 mb-2">{kb.description}</p>
+                      
+                      <div className="flex items-center space-x-4 text-xs text-gray-500 mb-2">
+                        <div className="flex items-center space-x-1">
+                          <Users className="h-3 w-3" />
+                          <span>{kb.owner}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Database className="h-3 w-3" />
+                          <span>{kb.documentCount} documents</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Brain className="h-3 w-3" />
+                          <span>{kb.chunkCount} chunks</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-3 w-3" />
+                          <span>Updated {kb.updatedAt}</span>
+                        </div>
+                      </div>
+                      
+                      {kb.tags.length > 0 && (
+                        <div className="flex items-center space-x-2">
+                          {kb.tags.slice(0, 3).map((tag, index) => (
+                            <span
+                              key={index}
+                              className="text-xs px-2 py-1 bg-white/10 rounded-full text-gray-300"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          {kb.tags.length > 3 && (
+                            <span className="text-xs text-gray-500">
+                              +{kb.tags.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="text-right">
-                      <div className="text-sm text-gray-400">Documents</div>
-                      <div className="text-lg font-medium text-white">{kb.document_count}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-gray-400">Created</div>
-                      <div className="text-sm text-white">{new Date(kb.created_at).toLocaleDateString()}</div>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                    </Button>
+                  
+                  <div className="flex items-center space-x-2">
+                    {/* Chat Toggle */}
+                    <button
+                      onClick={() => toggleChatEnabled(kb.id, !kb.chatEnabled)}
+                      className={`p-2 rounded-lg transition-colors ${
+                        kb.chatEnabled
+                          ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                          : 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30'
+                      }`}
+                      title={kb.chatEnabled ? 'Disable chat' : 'Enable chat'}
+                    >
+                      {kb.chatEnabled ? (
+                        <ToggleRight className="h-4 w-4" />
+                      ) : (
+                        <ToggleLeft className="h-4 w-4" />
+                      )}
+                    </button>
+                    
+                    {/* Action Buttons */}
+                    <button
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      title="View"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      title="Edit"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      title="Settings"
+                    >
+                      <Settings className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                      title="More options"
+                    >
+                      <MoreVertical className="h-4 w-4" />
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
