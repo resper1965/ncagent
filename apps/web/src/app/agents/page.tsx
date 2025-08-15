@@ -1,9 +1,32 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Brain, Database, Settings } from 'lucide-react'
-import { Navbar } from '../../components/ui/navbar'
-import { AgentPersona, AgentDataset } from '../../lib/agent-system'
+import { Plus, Edit, Trash2, Brain, Database, Settings, Users, Zap, Clock, CheckCircle, AlertCircle, MoreVertical, Eye } from 'lucide-react'
+
+interface AgentPersona {
+  id: string
+  name: string
+  title: string
+  description: string
+  focus: string
+  icon: string
+  core_principles: string[]
+  expertise_areas: string[]
+  status: 'active' | 'inactive' | 'training'
+  created_at: string
+  updated_at: string
+  dataset_count: number
+  conversation_count: number
+}
+
+interface AgentDataset {
+  id: string
+  name: string
+  description: string
+  category: string
+  priority: number
+  created_at: string
+}
 
 export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentPersona[]>([])
@@ -24,9 +47,58 @@ export default function AgentsPage() {
       const data = await response.json()
       if (data.success) {
         setAgents(data.data.agents || [])
+      } else {
+        // Simulated data for demo
+        setAgents([
+          {
+            id: '1',
+            name: 'Tech Expert',
+            title: 'Technical Documentation Specialist',
+            description: 'Specialized in technical documentation, API references, and system architecture',
+            focus: 'Technical accuracy and comprehensive documentation coverage',
+            icon: '🤖',
+            core_principles: ['Accuracy first', 'Comprehensive coverage', 'Clear explanations'],
+            expertise_areas: ['API Documentation', 'System Architecture', 'Technical Writing'],
+            status: 'active',
+            created_at: '2024-01-01',
+            updated_at: '2024-01-15',
+            dataset_count: 12,
+            conversation_count: 156
+          },
+          {
+            id: '2',
+            name: 'Business Analyst',
+            title: 'Business Process Expert',
+            description: 'Focused on business processes, requirements analysis, and strategic planning',
+            focus: 'Business value and process optimization',
+            icon: '📊',
+            core_principles: ['Business value', 'Process optimization', 'Strategic thinking'],
+            expertise_areas: ['Requirements Analysis', 'Process Optimization', 'Strategic Planning'],
+            status: 'active',
+            created_at: '2024-01-05',
+            updated_at: '2024-01-14',
+            dataset_count: 8,
+            conversation_count: 89
+          },
+          {
+            id: '3',
+            name: 'Legal Advisor',
+            title: 'Legal Documentation Specialist',
+            description: 'Expert in legal documents, compliance, and regulatory requirements',
+            focus: 'Legal accuracy and compliance adherence',
+            icon: '⚖️',
+            core_principles: ['Legal accuracy', 'Compliance first', 'Risk assessment'],
+            expertise_areas: ['Legal Documents', 'Compliance', 'Regulatory Requirements'],
+            status: 'training',
+            created_at: '2024-01-10',
+            updated_at: '2024-01-13',
+            dataset_count: 5,
+            conversation_count: 23
+          }
+        ])
       }
     } catch (error) {
-      console.error('Erro ao buscar agentes:', error)
+      console.error('Error fetching agents:', error)
     } finally {
       setLoading(false)
     }
@@ -40,7 +112,7 @@ export default function AgentsPage() {
         setAgentDatasets(data.data.datasets || [])
       }
     } catch (error) {
-      console.error('Erro ao buscar datasets:', error)
+      console.error('Error fetching datasets:', error)
     }
   }
 
@@ -50,7 +122,7 @@ export default function AgentsPage() {
   }
 
   const handleDeleteAgent = async (agentId: string) => {
-    if (!confirm('Tem certeza que deseja deletar este agente?')) return
+    if (!confirm('Are you sure you want to delete this agent?')) return
 
     try {
       const response = await fetch(`/api/agents/${agentId}`, {
@@ -65,99 +137,299 @@ export default function AgentsPage() {
         }
       }
     } catch (error) {
-      console.error('Erro ao deletar agente:', error)
+      console.error('Error deleting agent:', error)
     }
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950">
-      <Navbar />
+  const getStatusIcon = (status: AgentPersona['status']) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-4 w-4 text-green-400" />
+      case 'training':
+        return <Clock className="h-4 w-4 text-yellow-400" />
+      case 'inactive':
+        return <AlertCircle className="h-4 w-4 text-red-400" />
+      default:
+        return null
+    }
+  }
 
-      {/* Main Content */}
-      <div className="container mx-auto px-6 py-12">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-                  <Brain className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-white">Gerenciamento de Agentes</h1>
-                  <p className="text-gray-300">Configure e personalize seus agentes de IA</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Novo Agente
-              </button>
+  const getStatusText = (status: AgentPersona['status']) => {
+    switch (status) {
+      case 'active':
+        return 'Active'
+      case 'training':
+        return 'Training'
+      case 'inactive':
+        return 'Inactive'
+      default:
+        return ''
+    }
+  }
+
+  const getStatusColor = (status: AgentPersona['status']) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-500/20 text-green-400'
+      case 'training':
+        return 'bg-yellow-500/20 text-yellow-400'
+      case 'inactive':
+        return 'bg-red-500/20 text-red-400'
+      default:
+        return 'bg-gray-500/20 text-gray-400'
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+        <div className="flex items-center justify-center h-64">
+          <div className="flex items-center space-x-2">
+            <Clock className="h-6 w-6 text-purple-400 animate-spin" />
+            <span className="text-white">Loading agents...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex-1 space-y-6 p-6 md:p-8 pt-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-white">AI Agents</h2>
+          <p className="text-gray-400 mt-1">Manage and configure your specialized AI agents</p>
+        </div>
+        <button 
+          onClick={() => setShowCreateModal(true)}
+          className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+        >
+          <Plus className="h-4 w-4" />
+          <span>Create Agent</span>
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-6 md:grid-cols-4">
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <Brain className="h-6 w-6 text-blue-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Total Agents</p>
+              <p className="text-2xl font-bold text-white">{agents.length}</p>
             </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Lista de Agentes */}
-            <div className="lg:col-span-1">
-              <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-                <div className="p-6 border-b border-gray-700">
-                  <h2 className="text-lg font-semibold text-white">Agentes Disponíveis</h2>
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <CheckCircle className="h-6 w-6 text-green-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Active</p>
+              <p className="text-2xl font-bold text-white">
+                {agents.filter(a => a.status === 'active').length}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-purple-500/20 rounded-lg">
+              <Database className="h-6 w-6 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Total Datasets</p>
+              <p className="text-2xl font-bold text-white">
+                {agents.reduce((sum, agent) => sum + agent.dataset_count, 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-yellow-500/20 rounded-lg">
+              <Zap className="h-6 w-6 text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-400">Conversations</p>
+              <p className="text-2xl font-bold text-white">
+                {agents.reduce((sum, agent) => sum + agent.conversation_count, 0)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Agents List */}
+        <div className="lg:col-span-1">
+          <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
+            <div className="p-6 border-b border-white/10">
+              <h3 className="text-lg font-semibold text-white">Available Agents</h3>
+            </div>
+            <div className="p-4">
+              {agents.length === 0 ? (
+                <div className="text-center py-8">
+                  <Brain className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-medium text-white mb-2">No agents found</h3>
+                  <p className="text-gray-400">Create your first agent to get started</p>
                 </div>
-                <div className="p-4">
-                  {loading ? (
-                    <div className="text-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                      <p className="text-gray-300">Carregando agentes...</p>
+              ) : (
+                <div className="space-y-3">
+                  {agents.map((agent) => (
+                    <div
+                      key={agent.id}
+                      className={`p-4 rounded-xl cursor-pointer transition-all duration-200 ${
+                        selectedAgent?.id === agent.id
+                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30'
+                          : 'bg-white/5 hover:bg-white/10 border border-white/10'
+                      }`}
+                      onClick={() => handleAgentSelect(agent)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <div className="text-2xl">{agent.icon}</div>
+                          <div>
+                            <h3 className="font-medium text-white">{agent.name}</h3>
+                            <p className="text-sm text-gray-400">{agent.title}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1">
+                            {getStatusIcon(agent.status)}
+                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(agent.status)}`}>
+                              {getStatusText(agent.status)}
+                            </span>
+                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedAgent(agent)
+                              setShowEditModal(true)
+                            }}
+                            className="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteAgent(agent.id)
+                            }}
+                            className="p-1 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  ) : agents.length === 0 ? (
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Agent Details */}
+        <div className="lg:col-span-2">
+          {selectedAgent ? (
+            <div className="space-y-6">
+              {/* Agent Information */}
+              <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                      <span className="text-2xl">{selectedAgent.icon}</span>
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-white">{selectedAgent.name}</h2>
+                      <p className="text-gray-400">{selectedAgent.title}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowDatasetModal(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                  >
+                    <Database className="h-4 w-4" />
+                    <span>Add Dataset</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3">Description</h3>
+                    <p className="text-gray-300">{selectedAgent.description}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white mb-3">Focus</h3>
+                    <p className="text-gray-300">{selectedAgent.focus}</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-white mb-3">Core Principles</h3>
+                  <ul className="space-y-2">
+                    {selectedAgent.core_principles.map((principle, index) => (
+                      <li key={index} className="flex items-start space-x-2">
+                        <span className="text-purple-400 mt-1">•</span>
+                        <span className="text-gray-300">{principle}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold text-white mb-3">Expertise Areas</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAgent.expertise_areas.map((area, index) => (
+                      <span
+                        key={index}
+                        className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-500/30 rounded-full text-sm"
+                      >
+                        {area}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Agent Datasets */}
+              <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                  <h3 className="text-lg font-semibold text-white">Knowledge Datasets</h3>
+                </div>
+                <div className="p-6">
+                  {agentDatasets.length === 0 ? (
                     <div className="text-center py-8">
-                      <Brain className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <h3 className="text-lg font-medium text-white mb-2">Nenhum agente encontrado</h3>
-                      <p className="text-gray-300">Crie seu primeiro agente para começar</p>
+                      <Database className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                      <h4 className="text-lg font-medium text-white mb-2">No datasets found</h4>
+                      <p className="text-gray-400">Add datasets to customize the agent's knowledge</p>
                     </div>
                   ) : (
-                    <div className="space-y-3">
-                      {agents.map((agent) => (
-                        <div
-                          key={agent.id}
-                          className={`p-4 rounded-lg cursor-pointer transition-colors ${
-                            selectedAgent?.id === agent.id
-                              ? 'bg-primary/20 border border-primary'
-                              : 'bg-gray-700 hover:bg-gray-600'
-                          }`}
-                          onClick={() => handleAgentSelect(agent)}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="text-2xl">{agent.icon}</div>
-                              <div>
-                                <h3 className="font-medium text-white">{agent.name}</h3>
-                                <p className="text-sm text-gray-300">{agent.title}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  setSelectedAgent(agent)
-                                  setShowEditModal(true)
-                                }}
-                                className="p-1 text-gray-400 hover:text-gray-200 transition-colors"
-                              >
-                                <Edit className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  handleDeleteAgent(agent.id)
-                                }}
-                                className="p-1 text-red-400 hover:text-red-300 transition-colors"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </button>
-                            </div>
+                    <div className="space-y-4">
+                      {agentDatasets.map((dataset) => (
+                        <div key={dataset.id} className="p-4 bg-white/5 rounded-xl border border-white/10">
+                          <div className="flex items-center justify-between mb-2">
+                            <h4 className="font-medium text-white">{dataset.name}</h4>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              dataset.category === 'knowledge' ? 'bg-blue-500/20 text-blue-300' :
+                              dataset.category === 'examples' ? 'bg-green-500/20 text-green-300' :
+                              dataset.category === 'procedures' ? 'bg-yellow-500/20 text-yellow-300' :
+                              'bg-purple-500/20 text-purple-300'
+                            }`}>
+                              {dataset.category}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-300 mb-2">{dataset.description}</p>
+                          <div className="text-xs text-gray-400">
+                            Priority: {dataset.priority} • Created: {new Date(dataset.created_at).toLocaleDateString()}
                           </div>
                         </div>
                       ))}
@@ -166,119 +438,15 @@ export default function AgentsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Detalhes do Agente Selecionado */}
-            <div className="lg:col-span-2">
-              {selectedAgent ? (
-                <div className="space-y-6">
-                  {/* Informações do Agente */}
-                  <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center space-x-3">
-                        <div className="text-3xl">{selectedAgent.icon}</div>
-                        <div>
-                          <h2 className="text-2xl font-bold text-white">{selectedAgent.name}</h2>
-                          <p className="text-gray-300">{selectedAgent.title}</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setShowDatasetModal(true)}
-                        className="inline-flex items-center px-3 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
-                      >
-                        <Database className="h-4 w-4 mr-2" />
-                        Adicionar Dataset
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Descrição</h3>
-                        <p className="text-gray-300">{selectedAgent.description}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white mb-3">Foco</h3>
-                        <p className="text-gray-300">{selectedAgent.focus}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-white mb-3">Princípios Fundamentais</h3>
-                      <ul className="space-y-2">
-                        {selectedAgent.core_principles.map((principle, index) => (
-                          <li key={index} className="flex items-start space-x-2">
-                            <span className="text-primary mt-1">•</span>
-                            <span className="text-gray-300">{principle}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="mt-6">
-                      <h3 className="text-lg font-semibold text-white mb-3">Áreas de Expertise</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedAgent.expertise_areas.map((area, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-primary/20 text-primary border border-primary/30 rounded-full text-sm"
-                          >
-                            {area}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Datasets do Agente */}
-                  <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-                    <div className="p-6 border-b border-gray-700">
-                      <h3 className="text-lg font-semibold text-white">Datasets de Conhecimento</h3>
-                    </div>
-                    <div className="p-6">
-                      {agentDatasets.length === 0 ? (
-                        <div className="text-center py-8">
-                          <Database className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                          <h4 className="text-lg font-medium text-white mb-2">Nenhum dataset encontrado</h4>
-                          <p className="text-gray-300">Adicione datasets para personalizar o conhecimento do agente</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-4">
-                          {agentDatasets.map((dataset) => (
-                            <div key={dataset.id} className="p-4 bg-gray-700 rounded-lg">
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-medium text-white">{dataset.name}</h4>
-                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                  dataset.category === 'knowledge' ? 'bg-blue-500/20 text-blue-300' :
-                                  dataset.category === 'examples' ? 'bg-green-500/20 text-green-300' :
-                                  dataset.category === 'procedures' ? 'bg-yellow-500/20 text-yellow-300' :
-                                  'bg-purple-500/20 text-purple-300'
-                                }`}>
-                                  {dataset.category}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-300 mb-2">{dataset.description}</p>
-                              <div className="text-xs text-gray-400">
-                                Prioridade: {dataset.priority} • Criado: {new Date(dataset.created_at).toLocaleDateString()}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-12 text-center">
-                  <Brain className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                  <h3 className="text-xl font-medium text-white mb-2">Selecione um Agente</h3>
-                  <p className="text-gray-300">Escolha um agente da lista para ver seus detalhes e gerenciar seus datasets</p>
-                </div>
-              )}
+          ) : (
+            <div className="bg-gradient-to-r from-[#ffffff05] to-[#121212] backdrop-blur-sm border border-white/10 rounded-xl p-12 text-center">
+              <Brain className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+              <h3 className="text-xl font-medium text-white mb-2">Select an Agent</h3>
+              <p className="text-gray-400">Choose an agent from the list to view details and manage datasets</p>
             </div>
-          </div>
+          )}
         </div>
       </div>
-
-      {/* Modais serão implementados em componentes separados */}
     </div>
   )
 }
