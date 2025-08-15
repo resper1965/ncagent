@@ -1,124 +1,113 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createSupabaseClient } from '@/lib/supabase'
 import { z } from 'zod'
 
-// Função para criar cliente Supabase
-function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Supabase configuration is missing')
-  }
-  
-  return createClient(supabaseUrl, supabaseServiceKey)
-}
-
-// Schema para criar/atualizar agente
 const agentSchema = z.object({
   name: z.string().min(1).max(100),
   title: z.string().min(1).max(200),
   description: z.string().min(1).max(1000),
-  persona: z.string().min(1).max(2000),
-  expertise: z.array(z.string()).min(1),
-  communication_style: z.enum(['formal', 'casual', 'technical', 'friendly']),
-  knowledge_base_ids: z.array(z.string()).optional(),
-  is_active: z.boolean().default(true)
+  icon: z.string().min(1).max(50),
+  persona: z.string().min(1).max(500),
+  core_principles: z.array(z.string().min(1).max(200)),
+  expertise: z.array(z.string().min(1).max(200)),
+  communication_style: z.string().min(1).max(200),
+  is_enabled: z.boolean().default(true),
 })
 
-// GET - Listar agentes
 export async function GET(request: NextRequest) {
   try {
     const supabase = createSupabaseClient()
     
-    const { searchParams } = new URL(request.url)
-    const active = searchParams.get('active')
-    const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
+    // Get user from auth header
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
     
-    let query = supabase
-      .from('ncmd.agents')
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Get agents for user
+    const { data: agents, error } = await supabase
+      .from('agents')
       .select('*')
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .range(offset, offset + limit - 1)
-    
-    if (active === 'true') {
-      query = query.eq('is_active', true)
-    }
-    
-    const { data: agents, error } = await query
-    
+
     if (error) {
-      throw new Error(`Erro ao buscar agentes: ${error.message}`)
+      console.error('Agents fetch error:', error)
+      return NextResponse.json({ error: 'Failed to fetch agents' }, { status: 500 })
     }
-    
+
     return NextResponse.json({
       success: true,
       data: {
-        agents: agents || [],
-        pagination: {
-          limit,
-          offset,
-          hasMore: (agents?.length || 0) === limit
-        }
+        agents: agents || []
       }
     })
-    
+
   } catch (error) {
-    console.error('❌ Erro ao listar agentes:', error)
-    
-    return NextResponse.json({
-      success: false,
-      error: 'Erro interno do servidor',
-      message: error instanceof Error ? error.message : 'Erro desconhecido'
-    }, { status: 500 })
+    console.error('Agents fetch error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-// POST - Criar novo agente
 export async function POST(request: NextRequest) {
   try {
     const supabase = createSupabaseClient()
     
+    // Get user from auth header
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const body = await request.json()
     const validatedData = agentSchema.parse(body)
-    
-    console.log(`🤖 Criando agente: "${validatedData.name}"`)
-    
-    const { data: agent, error } = await supabase
-      .from('ncmd.agents')
-      .insert(validatedData)
+
+    // Create agent
+    const { data: agent, error: createError } = await supabase
+      .from('agents')
+      .insert({
+        ...validatedData,
+        user_id: user.id,
+      })
       .select()
       .single()
-    
-    if (error) {
-      throw new Error(`Erro ao criar agente: ${error.message}`)
+
+    if (createError) {
+      console.error('Agent creation error:', createError)
+      return NextResponse.json({ error: 'Failed to create agent' }, { status: 500 })
     }
-    
-    console.log(`✅ Agente criado: ${agent.name}`)
-    
+
     return NextResponse.json({
       success: true,
       data: {
-        agent: agent
+        agent
       }
     })
-    
+
   } catch (error) {
-    console.error('❌ Erro ao criar agente:', error)
+    console.error('Agent creation error:', error)
     
     if (error instanceof z.ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: 'Dados inválidos',
-        details: error.errors
+      return NextResponse.json({ 
+        error: 'Invalid request data', 
+        details: error.errors 
       }, { status: 400 })
     }
-    
-    return NextResponse.json({
-      success: false,
-      error: 'Erro interno do servidor',
-      message: error instanceof Error ? error.message : 'Erro desconhecido'
-    }, { status: 500 })
+
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
