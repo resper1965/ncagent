@@ -15,11 +15,20 @@ export function SidebarCollapsible() {
         {/* Header do Sidebar */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
           {sidebarOpen ? (
-            <h1 className="text-xl font-bold text-white">Gabi</h1>
-          ) : (
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">G</span>
+            <div className="flex items-center space-x-2">
+              <img 
+                src="/ionic-health-logo.svg" 
+                alt="Ionic Health Logo" 
+                className="h-6 w-auto"
+              />
+              <h1 className="text-xl font-bold text-white">Gabi</h1>
             </div>
+          ) : (
+            <img 
+              src="/ionic-health-logo.svg" 
+              alt="Ionic Health Logo" 
+              className="h-8 w-auto"
+            />
           )}
           <button
             onClick={toggleSidebar}
