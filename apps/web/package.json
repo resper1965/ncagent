@@ -52,6 +52,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "langchain": "0.3.30",
+    "@langchain/openai": "^0.0.14",
     "lucide-react": "^0.436.0",
     "motion": "^12.23.12",
     "next": "^14.2.31",

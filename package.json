@@ -4,8 +4,7 @@
   "private": true,
   "packageManager": "npm@10.8.2",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/*"
   ],
   "scripts": {
     "build": "turbo run build",
@@ -20,8 +19,11 @@
     "turbo": "^1.11.0"
   },
   "dependencies": {
+    "@types/node": "^24.3.0",
+    "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "typescript": "^5.9.2"
   },
   "engines": {
     "node": ">=18.0.0",

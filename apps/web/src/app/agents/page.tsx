@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Brain, Database, Settings, Users, Zap, Clock, CheckCircle, AlertCircle, MoreVertical, Eye, FileText } from 'lucide-react'
+import AgentCreateModal from '../../components/AgentCreateModal'
+import AgentEditModal from '../../components/AgentEditModal'
+import DatasetUploadModal from '../../components/DatasetUploadModal'
 
 interface AgentPersona {
   id: string
@@ -196,6 +199,32 @@ export default function AgentsPage() {
 
   return (
     <div className="dashboard-container">
+      {/* Modals */}
+      <AgentCreateModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onSuccess={fetchAgents}
+      />
+      
+      <AgentEditModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onSuccess={fetchAgents}
+        agent={selectedAgent}
+      />
+      
+      <DatasetUploadModal
+        isOpen={showDatasetModal}
+        onClose={() => setShowDatasetModal(false)}
+        onSuccess={() => {
+          if (selectedAgent) {
+            fetchAgentDatasets(selectedAgent.id)
+          }
+        }}
+        agentId={selectedAgent?.id || ''}
+        agentName={selectedAgent?.name || ''}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

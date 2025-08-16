@@ -1,24 +1,35 @@
-# Dockerfile Simplificado para n.agent
+# Dockerfile Simples para EasyPanel
 FROM node:18-alpine
 
+# Instalar dependências do sistema
+RUN apk add --no-cache libc6-compat
+
+# Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar package.json
+# Copiar arquivos de configuração
 COPY package*.json ./
+COPY turbo.json ./
+COPY tsconfig.json ./
+
+# Copiar package.json dos workspaces
 COPY apps/web/package*.json ./apps/web/
+COPY packages/*/package*.json ./packages/*/
 
-# Instalar dependências
+# Instalar todas as dependências
 RUN npm ci
-RUN cd apps/web && npm ci
 
-# Copiar código
+# Copiar todo o código
 COPY . .
 
-# Build
-RUN cd apps/web && npm run build
+# Build da aplicação
+RUN npm run build
+
+# Mudar para o diretório da aplicação web
+WORKDIR /app/apps/web
 
 # Expor porta
 EXPOSE 3000
 
-# Comando simples
-CMD ["cd", "apps/web", "&&", "npm", "start"]
+# Comando de inicialização
+CMD ["npm", "start"]
