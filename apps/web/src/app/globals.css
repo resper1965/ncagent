@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* === VARIÁVEIS DE CORES === */
+/* === VARIÁVEIS DE CORES SIMPLIFICADAS === */
 :root {
+  /* Cores base - paleta minimalista */
   --slate-900: #0f172a;
   --slate-800: #1e293b;
   --slate-700: #334155;
@@ -14,21 +15,23 @@
   --slate-100: #f1f5f9;
   --white: #ffffff;
   
-  --red-400: #f87171;
-  --red-500: #ef4444;
-  --green-400: #4ade80;
-  --green-500: #22c55e;
-  --yellow-400: #facc15;
-  --blue-400: #60a5fa;
-  --orange-400: #fb923c;
-  --purple-400: #a78bfa;
-  --pink-400: #f472b6;
+  /* Cores de destaque - apenas 3 cores principais */
+  --primary: #3b82f6;      /* Azul principal */
+  --success: #10b981;      /* Verde sucesso */
+  --warning: #f59e0b;      /* Amarelo aviso */
+  
+  /* Cores neutras para backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-dark: #0f172a;
+  --bg-card: #ffffff;
+  --bg-card-dark: #1e293b;
 }
 
-/* === SIDEBAR === */
+/* === SIDEBAR SIMPLIFICADA === */
 .sidebar {
-  width: 320px;
-  background-color: var(--slate-800);
+  width: 280px;
+  background-color: var(--bg-dark);
   border-right: 1px solid var(--slate-700);
   display: flex;
   flex-direction: column;
@@ -36,56 +39,56 @@
 }
 
 .sidebar-logo {
-  padding: 24px;
+  padding: 20px;
   border-bottom: 1px solid var(--slate-700);
 }
 
 .sidebar-logo img {
-  width: 128px;
+  width: 120px;
   height: auto;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .sidebar-section-title {
-  padding: 8px 16px;
-  font-size: 12px;
+  padding: 8px 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--slate-400);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 12px;
-  margin-top: 24px;
+  margin-bottom: 8px;
+  margin-top: 16px;
 }
 
 .sidebar-nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 8px;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
   color: var(--slate-300);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   position: relative;
 }
 
 .sidebar-nav-item:hover {
-  background-color: rgba(51, 65, 85, 0.3);
+  background-color: rgba(59, 130, 246, 0.1);
   color: var(--white);
 }
 
 .sidebar-nav-item.active {
-  background-color: rgba(96, 165, 250, 0.2);
-  color: var(--blue-400);
+  background-color: rgba(59, 130, 246, 0.15);
+  color: var(--primary);
 }
 
 .sidebar-nav-item.active::before {
@@ -94,33 +97,33 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 3px;
-  height: 20px;
-  background-color: var(--blue-400);
-  border-radius: 0 2px 2px 0;
+  width: 2px;
+  height: 16px;
+  background-color: var(--primary);
+  border-radius: 0 1px 1px 0;
 }
 
 .sidebar-nav-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
-/* === DASHBOARD CONTAINER === */
+/* === DASHBOARD CONTAINER SIMPLIFICADO === */
 .dashboard-container {
   flex: 1;
-  padding: 24px;
-  background-color: var(--slate-900);
+  padding: 20px;
+  background-color: var(--bg-secondary);
   min-height: 100vh;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* === METRICS GRID === */
+/* === METRICS GRID SIMPLIFICADO === */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 32px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 @media (max-width: 1200px) {
@@ -132,176 +135,123 @@
 @media (max-width: 768px) {
   .metrics-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 12px;
   }
 }
 
-/* === METRIC CARDS === */
+/* === METRIC CARDS SIMPLIFICADOS === */
 .metric-card {
-  background-color: rgba(51, 65, 85, 0.3);
-  border: 1px solid var(--slate-700);
-  border-radius: 12px;
-  padding: 20px;
-  transition: all 0.2s ease;
+  background-color: var(--bg-card);
+  border: 1px solid var(--slate-200);
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.15s ease;
   position: relative;
   overflow: hidden;
 }
 
 .metric-card:hover {
-  background-color: rgba(51, 65, 85, 0.5);
-  border-color: var(--slate-600);
-  transform: translateY(-2px);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Barras coloridas sutis no topo dos cards */
+/* Barra sutil no topo - apenas uma cor */
 .metric-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--blue-400), var(--purple-400));
+  height: 2px;
+  background: var(--primary);
   opacity: 0.6;
-}
-
-.metric-controls::before {
-  background: linear-gradient(90deg, var(--green-400), var(--blue-400));
-}
-
-.metric-risks::before {
-  background: linear-gradient(90deg, var(--yellow-400), var(--orange-400));
-}
-
-.metric-incidents::before {
-  background: linear-gradient(90deg, var(--red-400), var(--pink-400));
-}
-
-.metric-performance::before {
-  background: linear-gradient(90deg, var(--purple-400), var(--pink-400));
-}
-
-.metric-data::before {
-  background: linear-gradient(90deg, var(--orange-400), var(--yellow-400));
 }
 
 .metric-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .metric-card-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--slate-300);
+  color: var(--slate-600);
   margin: 0;
 }
 
 .metric-card-icon-container {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(96, 165, 250, 0.1);
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
 .metric-card-icon {
-  width: 16px;
-  height: 16px;
-  color: var(--blue-400);
+  width: 14px;
+  height: 14px;
+  color: var(--primary);
 }
 
-/* Cores específicas para cada tipo de métrica */
+/* Ícones com cores baseadas no tipo */
 .metric-controls .metric-card-icon-container {
-  background-color: rgba(34, 197, 94, 0.1);
+  background-color: rgba(16, 185, 129, 0.1);
 }
 .metric-controls .metric-card-icon {
-  color: var(--green-400);
+  color: var(--success);
 }
 
 .metric-risks .metric-card-icon-container {
-  background-color: rgba(250, 204, 21, 0.1);
+  background-color: rgba(245, 158, 11, 0.1);
 }
 .metric-risks .metric-card-icon {
-  color: var(--yellow-400);
+  color: var(--warning);
 }
 
-.metric-incidents .metric-card-icon-container {
-  background-color: rgba(239, 68, 68, 0.1);
-}
-.metric-incidents .metric-card-icon {
-  color: var(--red-400);
-}
-
-.metric-performance .metric-card-icon-container {
-  background-color: rgba(167, 139, 250, 0.1);
-}
-.metric-performance .metric-card-icon {
-  color: var(--purple-400);
-}
-
-.metric-data .metric-card-icon-container {
-  background-color: rgba(251, 146, 60, 0.1);
-}
-.metric-data .metric-card-icon {
-  color: var(--orange-400);
-}
-
-.metric-tickets .metric-card-icon-container {
-  background-color: rgba(96, 165, 250, 0.1);
-}
-.metric-tickets .metric-card-icon {
-  color: var(--blue-400);
-}
-
-/* Números menores e mais elegantes */
+/* Números simplificados */
 .metric-card-value {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
-  color: var(--white);
-  margin-bottom: 12px;
+  color: var(--slate-900);
+  margin-bottom: 8px;
   line-height: 1.2;
 }
 
 .metric-card-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  padding-top: 12px;
-  border-top: 1px solid var(--slate-700);
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--slate-200);
 }
 
 .metric-badge {
   padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 11px;
+  border-radius: 3px;
+  font-size: 10px;
   font-weight: 500;
 }
 
-.metric-badge.critical {
-  background-color: rgba(239, 68, 68, 0.15);
-  color: var(--red-400);
-}
-
 .metric-badge.high {
-  background-color: rgba(96, 165, 250, 0.15);
-  color: var(--blue-400);
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
 }
 
 .metric-badge.medium {
-  background-color: rgba(148, 163, 184, 0.15);
-  color: var(--slate-400);
+  background-color: rgba(148, 163, 184, 0.1);
+  color: var(--slate-600);
 }
 
-/* === ACTIVITY FEED === */
+/* === ACTIVITY FEED SIMPLIFICADO === */
 .activity-grid {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 24px;
+  gap: 20px;
 }
 
 @media (max-width: 1024px) {
@@ -313,30 +263,32 @@
 .activity-item {
   display: flex;
   gap: 12px;
-  padding: 16px;
-  border-radius: 8px;
-  background-color: rgba(51, 65, 85, 0.3);
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--slate-200);
+  transition: all 0.15s ease;
 }
 
 .activity-item:hover {
-  background-color: rgba(51, 65, 85, 0.5);
-  border-color: var(--slate-600);
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .activity-icon-container {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
 .activity-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+  color: var(--primary);
 }
 
 .activity-content {
@@ -345,24 +297,24 @@
 }
 
 .activity-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--white);
-  margin-bottom: 4px;
+  color: var(--slate-900);
+  margin-bottom: 2px;
 }
 
 .activity-description {
-  font-size: 13px;
-  color: var(--slate-400);
-  margin-bottom: 8px;
+  font-size: 12px;
+  color: var(--slate-600);
+  margin-bottom: 6px;
 }
 
 .activity-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12px;
-  color: var(--slate-400);
+  font-size: 11px;
+  color: var(--slate-500);
 }
 
 .activity-timestamp {
@@ -371,7 +323,7 @@
   gap: 4px;
 }
 
-/* === RESPONSIVIDADE === */
+/* === RESPONSIVIDADE SIMPLIFICADA === */
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
@@ -390,6 +342,42 @@
   }
   
   .metrics-grid {
-    gap: 16px;
+    gap: 12px;
+  }
+}
+
+/* === TEMA ESCURO SIMPLIFICADO === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #1e293b;
+    --bg-card-dark: #0f172a;
+  }
+  
+  .metric-card {
+    background-color: var(--bg-card);
+    border-color: var(--slate-700);
+  }
+  
+  .metric-card-value {
+    color: var(--white);
+  }
+  
+  .metric-card-title {
+    color: var(--slate-300);
+  }
+  
+  .activity-item {
+    background-color: var(--bg-card);
+    border-color: var(--slate-700);
+  }
+  
+  .activity-title {
+    color: var(--white);
+  }
+  
+  .activity-description {
+    color: var(--slate-400);
   }
 }

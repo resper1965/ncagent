@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function DashboardPage() {
   return (
     <div className="dashboard-container">
-      {/* Metrics Grid - 3x2 Layout */}
+      {/* Metrics Grid - 4 cards essenciais */}
       <div className="metrics-grid">
         {/* Metric Card - Total Documents */}
         <div className="metric-card metric-tickets">
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Metric Card - System Uptime */}
-        <div className="metric-card metric-incidents">
+        <div className="metric-card metric-tickets">
           <div className="metric-card-header">
             <div className="metric-card-title">System Uptime</div>
             <div className="metric-card-icon-container">
@@ -72,48 +72,14 @@ export default function DashboardPage() {
             <span className="metric-badge medium">This month</span>
           </div>
         </div>
-
-        {/* Metric Card - Response Time */}
-        <div className="metric-card metric-performance">
-          <div className="metric-card-header">
-            <div className="metric-card-title">Response Time</div>
-            <div className="metric-card-icon-container">
-              <svg className="metric-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-          </div>
-          <div className="metric-card-value">1.2s</div>
-          <div className="metric-card-details">
-            <span className="metric-badge high">-0.3s</span>
-            <span className="metric-badge medium">Avg</span>
-          </div>
-        </div>
-
-        {/* Metric Card - Data Processed */}
-        <div className="metric-card metric-data">
-          <div className="metric-card-header">
-            <div className="metric-card-title">Data Processed</div>
-            <div className="metric-card-icon-container">
-              <svg className="metric-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-              </svg>
-            </div>
-          </div>
-          <div className="metric-card-value">2.4GB</div>
-          <div className="metric-card-details">
-            <span className="metric-badge high">+156MB</span>
-            <span className="metric-badge medium">Today</span>
-          </div>
-        </div>
       </div>
 
-      {/* Activity Grid */}
+      {/* Activity Grid - Simplificado */}
       <div className="activity-grid">
         {/* Services Column */}
         <div className="activity-item">
-          <div className="activity-icon-container" style={{backgroundColor: 'rgba(96, 165, 250, 0.2)'}}>
-            <svg className="activity-icon" style={{color: 'var(--blue-400)'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="activity-icon-container">
+            <svg className="activity-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
@@ -131,8 +97,8 @@ export default function DashboardPage() {
 
         {/* Activities Column */}
         <div className="activity-item">
-          <div className="activity-icon-container" style={{backgroundColor: 'rgba(34, 197, 94, 0.2)'}}>
-            <svg className="activity-icon" style={{color: 'var(--green-400)'}} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="activity-icon-container">
+            <svg className="activity-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
           </div>
