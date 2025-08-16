@@ -3,7 +3,7 @@ import Link from 'next/link'
 export default function DashboardPage() {
   return (
     <div className="dashboard-container">
-      {/* Metrics Grid */}
+      {/* Metrics Grid - 3x2 Layout */}
       <div className="metrics-grid">
         {/* Metric Card - Total Documents */}
         <div className="metric-card metric-tickets">
@@ -70,6 +70,40 @@ export default function DashboardPage() {
           <div className="metric-card-details">
             <span className="metric-badge high">+0.1%</span>
             <span className="metric-badge medium">This month</span>
+          </div>
+        </div>
+
+        {/* Metric Card - Response Time */}
+        <div className="metric-card metric-performance">
+          <div className="metric-card-header">
+            <div className="metric-card-title">Response Time</div>
+            <div className="metric-card-icon-container">
+              <svg className="metric-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+          </div>
+          <div className="metric-card-value">1.2s</div>
+          <div className="metric-card-details">
+            <span className="metric-badge high">-0.3s</span>
+            <span className="metric-badge medium">Avg</span>
+          </div>
+        </div>
+
+        {/* Metric Card - Data Processed */}
+        <div className="metric-card metric-data">
+          <div className="metric-card-header">
+            <div className="metric-card-title">Data Processed</div>
+            <div className="metric-card-icon-container">
+              <svg className="metric-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
+              </svg>
+            </div>
+          </div>
+          <div className="metric-card-value">2.4GB</div>
+          <div className="metric-card-details">
+            <span className="metric-badge high">+156MB</span>
+            <span className="metric-badge medium">Today</span>
           </div>
         </div>
       </div>
