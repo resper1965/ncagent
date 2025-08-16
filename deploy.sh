@@ -1,55 +1,67 @@
 #!/bin/bash
 
-# Script de Deploy para EasyPanel
-# nCommand Lite Agent
+# Script de Deploy Automático para ncAgent
+# Executa deploy via API da VPS após commits
 
 set -e
 
-echo "🚀 Iniciando deploy do nCommand Lite Agent..."
+echo "🚀 Iniciando Deploy Automático..."
 
-# Verificar se estamos no diretório correto
-if [ ! -f "package.json" ]; then
-    echo "❌ Erro: Execute este script na raiz do projeto"
+# Configurações
+DEPLOY_URL="http://62.72.8.164:3000/api/deploy/c5d2c1ef48a80ba404b96bb4f608c49aa410e697878a1966"
+APP_URL="https://ncagent.ness.tec.br/"
+
+# Função para verificar se a aplicação está online
+check_app_status() {
+    echo "🔍 Verificando status da aplicação..."
+    if curl -s -f "$APP_URL" > /dev/null; then
+        echo "✅ Aplicação online em: $APP_URL"
+        return 0
+    else
+        echo "❌ Aplicação offline"
+        return 1
+    fi
+}
+
+# Função para aguardar deploy
+wait_for_deploy() {
+    echo "⏳ Aguardando deploy completar..."
+    local max_attempts=30
+    local attempt=1
+    
+    while [ $attempt -le $max_attempts ]; do
+        echo "Tentativa $attempt/$max_attempts..."
+        
+        if check_app_status; then
+            echo "🎉 Deploy concluído com sucesso!"
+            return 0
+        fi
+        
+        sleep 10
+        attempt=$((attempt + 1))
+    done
+    
+    echo "❌ Timeout: Deploy não completou em 5 minutos"
+    return 1
+}
+
+# Executar deploy
+echo "📡 Triggerando deploy via API..."
+response=$(curl -s -X POST "$DEPLOY_URL")
+
+if [ $? -eq 0 ]; then
+    echo "✅ Deploy iniciado: $response"
+    
+    # Aguardar deploy completar
+    if wait_for_deploy; then
+        echo "🎯 Deploy finalizado com sucesso!"
+        echo "🌐 Aplicação disponível em: $APP_URL"
+        exit 0
+    else
+        echo "⚠️ Deploy pode ter falhado"
+        exit 1
+    fi
+else
+    echo "❌ Erro ao iniciar deploy"
     exit 1
 fi
-
-# Configurar ambiente de produção
-echo "🔧 Configurando ambiente de produção..."
-if [ -f "production.env" ]; then
-    echo "📋 Usando configurações de produção..."
-    export $(cat production.env | grep -v '^#' | xargs)
-else
-    echo "⚠️  Arquivo production.env não encontrado, usando configurações padrão"
-fi
-
-# Instalar dependências
-echo "📦 Instalando dependências..."
-npm ci
-
-# Build dos pacotes
-echo "🔨 Build dos pacotes..."
-npm run build
-
-# Build do Docker (opcional, para teste local)
-if [ "$1" = "--docker" ]; then
-    echo "🐳 Build da imagem Docker..."
-    docker build -t ncommand-lite-agent .
-    echo "✅ Imagem Docker criada: ncommand-lite-agent"
-fi
-
-echo "✅ Deploy preparado com sucesso!"
-echo ""
-echo "📋 Próximos passos no EasyPanel:"
-echo "1. Fazer upload do código"
-echo "2. Configurar variáveis de ambiente (ver production.env)"
-echo "3. Definir porta: 3000"
-echo "4. Configurar domínio: https://ncagent.ness.tec.br"
-echo "5. Deploy!"
-echo ""
-echo "🔧 Variáveis de ambiente necessárias:"
-echo "NEXT_PUBLIC_SUPABASE_URL=https://nsecops-ness-supabase.pzgnh1.easypanel.host/"
-echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-echo "SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-echo "OPENAI_API_KEY=sk-proj-..."
-echo "NODE_ENV=production"
-echo "NEXT_PUBLIC_APP_URL=https://ncagent.ness.tec.br"
