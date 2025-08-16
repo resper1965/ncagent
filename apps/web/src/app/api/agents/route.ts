@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createSupabaseClient } from '../../../lib/supabase'
+import { createServerSupabaseClient } from '../../../lib/supabase'
 import { z } from 'zod'
 
 const agentSchema = z.object({
@@ -16,7 +16,13 @@ const agentSchema = z.object({
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient()
+    const supabase = createServerSupabaseClient()
+    
+    if (!supabase) {
+      return NextResponse.json({ 
+        error: 'Database connection not available' 
+      }, { status: 503 })
+    }
     
     // Get user from auth header
     const authHeader = request.headers.get('authorization')
@@ -58,7 +64,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createSupabaseClient()
+    const supabase = createServerSupabaseClient()
+    
+    if (!supabase) {
+      return NextResponse.json({ 
+        error: 'Database connection not available' 
+      }, { status: 503 })
+    }
     
     // Get user from auth header
     const authHeader = request.headers.get('authorization')
