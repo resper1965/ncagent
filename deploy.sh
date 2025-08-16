@@ -47,6 +47,7 @@ wait_for_deploy() {
 
 # Executar deploy
 echo "📡 Triggerando deploy via API..."
+echo "🔧 Usando Dockerfile.production para build robusto..."
 response=$(curl -s -X POST "$DEPLOY_URL")
 
 if [ $? -eq 0 ]; then
